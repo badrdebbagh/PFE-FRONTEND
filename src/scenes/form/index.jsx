@@ -1,22 +1,48 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, MenuItem, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+import axios from "axios";
+import { useState } from "react";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getRoles } from "../../state/authentication/Action";
 
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const roles = useSelector((store) => store.auth.roles);
+  const dispatch = useDispatch();
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  const handleFetchRoles = () => {
+    if (roles.length === 0) {
+      dispatch(getRoles());
+    }
   };
 
+  const handleFormSubmit = async (values, { resetForm }) => {
+    try {
+      console.log(values);
+
+      const endpoint = "http://localhost:8080/api/createUser";
+      const response = await axios.post(endpoint, values);
+      resetForm();
+      console.log("User created successfully:", response.data);
+    } catch (error) {
+      console.error("Failed to create user:", error);
+    }
+  };
   return (
     <Box m="20px">
       <Header title="CREATE USER" subtitle="Create a New User Profile" />
 
       <Formik
-        onSubmit={handleFormSubmit}
+        onSubmit={(values, formikActions) =>
+          handleFormSubmit(values, formikActions)
+        }
         initialValues={initialValues}
         validationSchema={checkoutSchema}
       >
@@ -76,43 +102,45 @@ const Form = () => {
                 helperText={touched.email && errors.email}
                 sx={{ gridColumn: "span 4" }}
               />
+
+              <FormControl
+                fullWidth
+                sx={{ gridColumn: "span 2" }}
+                variant="filled"
+              >
+                <InputLabel id="demo-simple-select-label">Role</InputLabel>
+
+                <Select
+                  labelId="role-select-label"
+                  id="role-select"
+                  name="role"
+                  value={values.role}
+                  onChange={handleChange}
+                  onOpen={handleFetchRoles}
+                  label="Role"
+                >
+                  {roles.length > 0 ? (
+                    roles.map((role) => (
+                      <MenuItem key={role} value={role}>
+                        {role}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem disabled>Loading...</MenuItem>
+                  )}
+                </Select>
+              </FormControl>
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Contact Number"
+                label="Password"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Address 1"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address1}
-                name="address1"
-                error={!!touched.address1 && !!errors.address1}
-                helperText={touched.address1 && errors.address1}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Address 2"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address2}
-                name="address2"
-                error={!!touched.address2 && !!errors.address2}
-                helperText={touched.address2 && errors.address2}
+                value={values.password}
+                name="password"
+                error={!!touched.email && !!errors.email}
+                helperText={touched.email && errors.email}
                 sx={{ gridColumn: "span 4" }}
               />
             </Box>
@@ -135,20 +163,28 @@ const checkoutSchema = yup.object().shape({
   firstName: yup.string().required("required"),
   lastName: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
-  contact: yup
+  password: yup
     .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  address1: yup.string().required("required"),
-  address2: yup.string().required("required"),
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters long"),
+  role: yup
+    .string()
+    .required("Role is required")
+    .oneOf(["USER", "ADMIN"], "Invalid role"),
+
+  // contact: yup
+  //   .string()
+  //   .matches(phoneRegExp, "Phone number is not valid")
+  //   .required("required"),
+  // address1: yup.string().required("required"),
+  // address2: yup.string().required("required"),
 });
 const initialValues = {
   firstName: "",
   lastName: "",
   email: "",
-  contact: "",
-  address1: "",
-  address2: "",
+  password: "",
+  role: "",
 };
 
 export default Form;

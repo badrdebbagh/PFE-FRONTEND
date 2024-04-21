@@ -13,122 +13,69 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteUser,
-  getUser,
-  suspendUser,
+  getProjects,
+  getProjectsByUserId,
 } from "../../state/authentication/Action";
 
-const Team = () => {
+const UserProjects = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const jwt = localStorage.getItem("jwt");
-  const { users } = useSelector((state) => state.auth);
-  const handleSuspendUser = (id) => {
-    dispatch(suspendUser(id, jwt));
-  };
-
   const columns = [
     { field: "id", headerName: "ID" },
     {
-      field: "firstName",
-      headerName: "Prenom",
+      field: "nom",
+      headerName: "Nom",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "lastName",
-      headerName: "Nom",
+      field: "description",
+      headerName: "Description",
       flex: 1,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
-    {
-      field: "role",
-      headerName: "Role",
-      flex: 1,
-    },
-    {
-      field: "suspended",
-      headerName: "État",
-      flex: 1,
-      renderCell: (params) =>
-        params.row.suspended ? (
-          <Typography color="error">Suspended</Typography>
-        ) : (
-          <Typography color="secondary">Active</Typography>
-        ),
     },
 
     {
-      field: "Action",
-      headerName: "Suspendre",
+      field: "delete",
+      headerName: "Delete",
       sortable: false,
       renderCell: (params) => (
         <Button
           variant="outlined"
           startIcon={<DeleteIcon />}
-          onClick={(event) => {
-            event.stopPropagation(); // Prevent checkbox from being checked
-            handleSuspendUser(params.id);
-          }}
+          // onClick={() => handleDeleteUser(params.id)}
           sx={{ backgroundColor: colors.primary[100] }}
         >
           Delete
         </Button>
       ),
     },
-
-    // {
-    //   field: "accessLevel",
-    //   headerName: "Access Level",
-    //   flex: 1,
-    //   renderCell: ({ row: { access } }) => {
-    //     return (
-    //       <Box
-    //         width="60%"
-    //         m="0 auto"
-    //         p="5px"
-    //         display="flex"
-    //         justifyContent="center"
-    //         backgroundColor={
-    //           access === "admin"
-    //             ? colors.greenAccent[600]
-    //             : access === "manager"
-    //             ? colors.greenAccent[700]
-    //             : colors.greenAccent[700]
-    //         }
-    //         borderRadius="4px"
-    //       >
-    //         {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-    //         {access === "manager" && <SecurityOutlinedIcon />}
-    //         {access === "user" && <LockOpenOutlinedIcon />}
-    //         <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-    //           {access}
-    //         </Typography>
-    //       </Box>
-    //     );
-    //   },
-    // },
   ];
 
-  const handleDeleteUser = (id) => {
-    dispatch(deleteUser(id, jwt));
-  };
+  const projects = useSelector((state) => state.auth.projects);
 
   useEffect(() => {
-    dispatch(getUser(jwt));
-  }, []);
+    if (jwt) {
+      dispatch(getProjectsByUserId(jwt));
+    }
+  }, [dispatch, jwt]);
+
+  // useEffect(() => {
+  //   console.log(projects);
+  //   dispatch(getProjects());
+  // }, [dispatch]);
 
   const handleAddUser = () => {
-    navigate("/form");
+    navigate("/addProject");
   };
   return (
     <Box m="20px">
-      <Header title="Equipe" subtitle="Gestion des membres de l'equipe" />
+      <Header
+        title="Projets Utilisateurs"
+        subtitle="Gestion des membres de l'equipe"
+      />
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -158,7 +105,7 @@ const Team = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={users} columns={columns} />
+        <DataGrid checkboxSelection rows={projects} columns={columns} />
         <Button
           onClick={handleAddUser}
           sx={{ mt: 2 }}
@@ -166,11 +113,11 @@ const Team = () => {
           color="secondary"
           variant="contained"
         >
-          Create New User
+          Creer nouveau projet
         </Button>
       </Box>
     </Box>
   );
 };
 
-export default Team;
+export default UserProjects;
