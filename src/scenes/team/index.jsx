@@ -23,7 +23,10 @@ const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const jwt = localStorage.getItem("jwt");
-  const { users } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
+  const utilisateurOnly = user.filter((user) => user.role === "USER");
+  console.log("user only", utilisateurOnly);
+  console.log("uieuirr", user);
   const handleSuspendUser = (id) => {
     dispatch(suspendUser(id, jwt));
   };
@@ -70,14 +73,17 @@ const Team = () => {
       renderCell: (params) => (
         <Button
           variant="outlined"
-          startIcon={<DeleteIcon />}
           onClick={(event) => {
-            event.stopPropagation(); // Prevent checkbox from being checked
-            handleSuspendUser(params.id);
+            event.stopPropagation();
+            if (params.row.suspended) {
+              handleSuspendUser(params.id);
+            } else {
+              handleSuspendUser(params.id);
+            }
           }}
-          sx={{ backgroundColor: colors.primary[100] }}
+          sx={{ backgroundColor: colors.primary[100], width: 200 }}
         >
-          Delete
+          {params.row.suspended ? "Activer" : "Suspendre"}
         </Button>
       ),
     },
@@ -114,10 +120,6 @@ const Team = () => {
     //   },
     // },
   ];
-
-  const handleDeleteUser = (id) => {
-    dispatch(deleteUser(id, jwt));
-  };
 
   useEffect(() => {
     dispatch(getUser(jwt));
@@ -158,7 +160,7 @@ const Team = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={users} columns={columns} />
+        <DataGrid checkboxSelection rows={user} columns={columns} />
         <Button
           onClick={handleAddUser}
           sx={{ mt: 2 }}

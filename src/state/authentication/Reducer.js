@@ -6,6 +6,9 @@ import {
   DELETE_USER_SUCCESS,
   GET_PROJECT_FAILURE,
   GET_PROJECT_REQUEST,
+  GET_PROJECT_ROLE_FAILURE,
+  GET_PROJECT_ROLE_REQUEST,
+  GET_PROJECT_ROLE_SUCCESS,
   GET_PROJECT_SUCCESS,
   GET_ROLE_FAILURE,
   GET_ROLE_REQUEST,
@@ -25,12 +28,13 @@ import { jwtDecode } from "jwt-decode";
 
 const initialState = {
   roles: [],
-  users: [],
+  user: [],
   isLoading: false,
   error: null,
   jwt: null,
   success: null,
   projects: [],
+  projectRoles: [],
 };
 
 export const authReducer = (state = initialState, action) => {
@@ -39,6 +43,7 @@ export const authReducer = (state = initialState, action) => {
     case GET_ROLE_REQUEST:
     case GET_USER_REQUEST:
     case GET_PROJECT_REQUEST:
+    case GET_PROJECT_ROLE_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -46,19 +51,42 @@ export const authReducer = (state = initialState, action) => {
         success: null,
       };
     case LOGIN_SUCCESS:
+      // return {
+      //   ...state,
+      //   isLoading: false,
+      //   error: null,
+      //   jwt: action.payload.jwt,
+      //   success : "login success"
+      // };
       try {
-        const decoded = jwtDecode(action.payload); // Decode JWT string directly from action.payload
-        console.log("Decoded JWT:", decoded);
+        const decoded = jwtDecode(action.payload.jwt); // Assuming JWT is in action.payload.jwt
+        console.log("decoded", decoded);
+
+        const newUser = {
+          id: decoded.userId, // Assuming userId is the unique identifier in your decoded JWT
+          firstName: decoded.firstName,
+          lastName: decoded.lastName, // Assuming these fields exist in your JWT
+          role: decoded.authorities, // This should be an array or a string
+        };
+
+        // Check if the user already exists
+        const existingUserIndex = state.user.findIndex(
+          (user) => user.id === newUser.id
+        );
+
+        const updatedUsers =
+          existingUserIndex !== -1
+            ? state.user.map((user) =>
+                user.id === newUser.id ? { ...user, ...newUser } : user
+              )
+            : [...state.user, newUser]; // If user does not exist, add new user
+
         return {
           ...state,
           isLoading: false,
-          jwt: action.payload, // Store the JWT string
-          users: {
-            ...state.users,
-            email: decoded.email,
-            role: decoded.authorities, // Store role information
-          },
-          success: "Login Success",
+          jwt: action.payload.jwt, // Store JWT
+          user: updatedUsers,
+          success: "Login successful",
         };
       } catch (error) {
         console.error("Error decoding JWT:", error);
@@ -74,7 +102,16 @@ export const authReducer = (state = initialState, action) => {
         ...state,
         isLoading: true,
       };
+
+    case GET_PROJECT_ROLE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        projectRoles: action.payload,
+        success: "Project roles fetched Success",
+      };
     case GET_ROLE_SUCCESS:
+      console.log("action", action.payload);
       return {
         ...state,
         isLoading: false,
@@ -94,21 +131,21 @@ export const authReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        projects: action.payload, // Update the projects array with the payload
+        projects: action.payload,
         success: "Projects fetched successfully",
       };
     case GET_USER_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        users: action.payload,
+        user: action.payload,
         success: "Fetched Success",
       };
     case DELETE_USER_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        users: null,
+        user: null,
         success: "User deleted successfully",
       };
     case LOGIN_FAILURE:
@@ -116,6 +153,7 @@ export const authReducer = (state = initialState, action) => {
     case ADD_PROJECT_FAILURE:
     case GET_ROLE_FAILURE:
     case GET_PROJECT_FAILURE:
+    case GET_PROJECT_ROLE_FAILURE:
       return {
         ...state,
         isLoading: false,
@@ -137,7 +175,7 @@ export const authReducer = (state = initialState, action) => {
     case SUSPEND_USER_SUCCESS:
       return {
         ...state,
-        users: state.users.map((user) =>
+        user: state.user.map((user) =>
           user.id === action.payload ? { ...user, suspended: true } : user
         ),
       };
@@ -150,4 +188,11 @@ export const authReducer = (state = initialState, action) => {
     default:
       return state;
   }
+};
+export const getRolesSuccess = (roles) => {
+  console.log("Roles payload:", roles); // Log the payload
+  return {
+    type: GET_ROLE_SUCCESS,
+    payload: roles,
+  };
 };

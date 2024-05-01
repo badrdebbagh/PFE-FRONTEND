@@ -23,10 +23,20 @@ import { getUser } from "./state/authentication/Action";
 import Project from "./scenes/projectForm";
 import PrivateRouter from "./components/PrivateRouter";
 import { Toaster } from "./componentsShadn/ui/toaster";
+import { LOGIN_SUCCESS } from "./state/authentication/ActionType";
 
 function App() {
   const [theme, colorMode] = useMode();
+  const dispatch = useDispatch();
 
+  // const { auth } = useSelector((state) => state);
+  // console.log("autgh", auth);
+  useEffect(() => {
+    const jwtFromStorage = localStorage.getItem("jwt");
+    if (jwtFromStorage) {
+      dispatch({ type: LOGIN_SUCCESS, payload: jwtFromStorage });
+    }
+  }, [dispatch]);
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>

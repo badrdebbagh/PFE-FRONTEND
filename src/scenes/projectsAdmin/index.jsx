@@ -23,7 +23,7 @@ import {
   getProjectsByUserId,
 } from "../../state/authentication/Action";
 
-const Projects = () => {
+const ProjectsAdmin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -31,9 +31,9 @@ const Projects = () => {
   const jwt = localStorage.getItem("jwt");
   const isLoading = useSelector((state) => state.auth.isLoading);
   const columns = [
-    { field: "projectId", headerName: "ID" },
+    { field: "id", headerName: "ID" },
     {
-      field: "projectName",
+      field: "nom",
       headerName: "Nom du projet",
       flex: 1,
       cellClassName: "name-column--cell",
@@ -53,8 +53,8 @@ const Projects = () => {
       flex: 1,
     },
     {
-      field: "userRole",
-      headerName: "Role",
+      field: "chefDeProjet",
+      headerName: "Chef De Projet",
       flex: 1,
     },
   ];
@@ -62,16 +62,20 @@ const Projects = () => {
   const projects = useSelector((state) => state.auth.projects);
   console.log("projeecfetecdte", projects);
 
-  useEffect(() => {
-    const loadJWT = async () => {
-      const token = await localStorage.getItem("jwt");
-      if (token) {
-        dispatch(getProjectsByUserId(token));
-      }
-    };
+  // useEffect(() => {
+  //   const loadJWT = async () => {
+  //     const token = await localStorage.getItem("jwt");
+  //     if (token) {
+  //       dispatch(getProjectsByUserId(token));
+  //     }
+  //   };
 
-    loadJWT();
-  }, [dispatch]);
+  //   loadJWT();
+  // }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getProjects());
+  }, []);
 
   if (isLoading) {
     return (
@@ -123,7 +127,7 @@ const Projects = () => {
         }}
       >
         <DataGrid
-          getRowId={(row) => row.projectId}
+          getRowId={(row) => row.id}
           checkboxSelection
           rows={projects}
           columns={columns}
@@ -142,4 +146,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+export default ProjectsAdmin;

@@ -170,7 +170,7 @@ const checkoutSchema = yup.object().shape({
   role: yup
     .string()
     .required("Role is required")
-    .oneOf(["USER", "ADMIN"], "Invalid role"),
+    .oneOf(["USER", "ADMIN" ,"CHEF_DE_PROJECT"], "Invalid role"),
 
   // contact: yup
   //   .string()

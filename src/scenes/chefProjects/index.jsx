@@ -23,7 +23,7 @@ import {
   getProjectsByUserId,
 } from "../../state/authentication/Action";
 
-const Projects = () => {
+const ChefProjects = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -46,7 +46,11 @@ const Projects = () => {
         </Button>
       ),
     },
-
+    {
+      field: "cahierDeTestGlobalNom",
+      headerName: "Cahier De Test Global",
+      flex: 1,
+    },
     {
       field: "description",
       headerName: "Description",
@@ -64,7 +68,7 @@ const Projects = () => {
 
   useEffect(() => {
     const loadJWT = async () => {
-      const token = await localStorage.getItem("jwt");
+      const token = await localStorage.getItem("jwt"); // Example of async retrieval
       if (token) {
         dispatch(getProjectsByUserId(token));
       }
@@ -142,4 +146,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+export default ChefProjects;

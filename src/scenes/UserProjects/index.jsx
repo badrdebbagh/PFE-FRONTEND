@@ -1,4 +1,16 @@
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  ListItemText,
+  NativeSelect,
+  Select,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataTeam } from "../../data/mockData";
@@ -8,33 +20,65 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  deleteUser,
+  addProject,
+  assignProjectToUser,
+  getProjectRoles,
   getProjects,
-  getProjectsByUserId,
 } from "../../state/authentication/Action";
+import { MenuItem } from "react-pro-sidebar";
 
 const UserProjects = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const jwt = localStorage.getItem("jwt");
+  const [selectedProjects, setSelectedProjects] = useState([]);
+  const { projectRoles } = useSelector((state) => state.auth);
+
+  const { userId } = useParams();
+
+  const [selectedProjectRoles, setSelectedProjectRoles] = useState([]);
   const columns = [
     { field: "id", headerName: "ID" },
     {
       field: "nom",
       headerName: "Nom",
       flex: 1,
-      cellClassName: "name-column--cell",
     },
     {
       field: "description",
       headerName: "Description",
       flex: 1,
+    },
+    {
+      field: "role",
+      headerName: "Role",
+      flex: 1,
+      renderCell: (params) => (
+        <FormControl fullWidth>
+          <InputLabel htmlFor={`role-select-${params.id}`}>Role</InputLabel>
+          <Select
+            labelId={`role-select-label-${params.id}`}
+            id={`role-select-${params.id}`}
+            value={selectedProjectRoles[params.id] || ""}
+            onChange={handleRoleChange(params.id)}
+            onOpen={loadRoles}
+            renderValue={(selected) => selected}
+            MenuProps={{
+              PaperProps: { style: { maxHeight: 48 * 4.5 + 8, width: 250 } },
+            }}
+          >
+            {projectRoles.map((projectRole) => (
+              <MenuItem key={projectRole} value={projectRole}>
+                {projectRole}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      ),
     },
 
     {
@@ -54,22 +98,53 @@ const UserProjects = () => {
     },
   ];
 
+  const handleRoleChange = (projectId) => (event) => {
+    const { value } = event.target;
+
+    setSelectedProjectRoles((prev) => ({
+      ...prev,
+      [projectId]: value,
+    }));
+  };
+  const loadRoles = () => {
+    dispatch(getProjectRoles());
+  };
+
   const projects = useSelector((state) => state.auth.projects);
 
   useEffect(() => {
-    if (jwt) {
-      dispatch(getProjectsByUserId(jwt));
-    }
-  }, [dispatch, jwt]);
+    console.log(projects);
+    dispatch(getProjects());
+  }, [dispatch]);
 
-  // useEffect(() => {
-  //   console.log(projects);
-  //   dispatch(getProjects());
-  // }, [dispatch]);
-
-  const handleAddUser = () => {
-    navigate("/addProject");
+  const handleProjectSelection = (ids) => {
+    setSelectedProjects(ids);
+    console.log(ids);
   };
+
+  const assignProjectsToUser = () => {
+    console.log("hello");
+    selectedProjects.forEach((projectId) => {
+      const role = selectedProjectRoles[projectId];
+      console.log(`Assigning role: ${role} to project ID: ${projectId}`);
+      if (role) {
+        dispatch(assignProjectToUser(userId, projectId, role));
+      } else {
+        console.log("No role selected for project:", projectId);
+      }
+    });
+  };
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
   return (
     <Box m="20px">
       <Header
@@ -105,15 +180,21 @@ const UserProjects = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={projects} columns={columns} />
+        <DataGrid
+          onSelectionModelChange={handleProjectSelection}
+          checkboxSelection
+          rows={projects}
+          columns={columns}
+          getRowId={(row) => row.uniqueId || row.id}
+        />
         <Button
-          onClick={handleAddUser}
+          onClick={assignProjectsToUser}
           sx={{ mt: 2 }}
           type="submit"
           color="secondary"
           variant="contained"
         >
-          Creer nouveau projet
+          Affecter projet a lutilisateur
         </Button>
       </Box>
     </Box>
