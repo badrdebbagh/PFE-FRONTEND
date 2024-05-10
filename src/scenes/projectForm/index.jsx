@@ -56,10 +56,7 @@ const ProjectForm = () => {
   const user = useSelector((state) =>
     state.auth.user.filter((user) => user.role === "CHEF_DE_PROJECT")
   );
-  console.log("dweodw", user);
-
-  const role = user.role;
-  console.log("jfioejfdoie ", role);
+  
 
   const form = useForm({
     defaultValues: {
@@ -142,25 +139,28 @@ const ProjectForm = () => {
                     name="description"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <Label htmlFor="description">Utilisateur</Label>
-                        <Select
-                          onValueChange={handleSelectChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl className="w-full">
+                        <FormControl className="w-full">
+                          <Label htmlFor="description">Chef de projet</Label>
+                          <Select
+                            onValueChange={handleSelectChange}
+                            value={field.value}
+                          >
                             <SelectTrigger>
-                              <SelectValue placeholder="Selectionner utilisateur" />
+                              <SelectValue placeholder="Selectionner chef de projet" />
                             </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {user.map((user) => (
-                              <SelectItem key={user.id} value={user.id}>
-                                {user.firstName} {user.lastName}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
 
+                            <SelectContent>
+                              {user.map((user) => (
+                                <SelectItem
+                                  key={user.firstName}
+                                  value={user.id}
+                                >
+                                  {user.firstName} {user.lastName}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -172,16 +172,7 @@ const ProjectForm = () => {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button variant="outline">Cancel</Button>
-          <Button
-            onClick={handleAddProject}
-            // onClick={() => {
-            //   toast({
-            //     title: "Scheduled: Catch up",
-            //     description: "Friday, February 10, 2023 at 5:57 PM",
-            //   });
-            // }}
-            variant="outline"
-          >
+          <Button onClick={handleAddProject} variant="outline">
             Ajouter
           </Button>
         </CardFooter>

@@ -29,8 +29,6 @@ function App() {
   const [theme, colorMode] = useMode();
   const dispatch = useDispatch();
 
-  // const { auth } = useSelector((state) => state);
-  // console.log("autgh", auth);
   useEffect(() => {
     const jwtFromStorage = localStorage.getItem("jwt");
     if (jwtFromStorage) {

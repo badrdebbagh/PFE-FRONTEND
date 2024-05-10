@@ -17,14 +17,17 @@ import ChefProjects from "../scenes/chefProjects";
 import ProjectsAdmin from "../scenes/projectsAdmin";
 import ProjectCard from "../scenes/projectscardtest";
 import ProjectDetails from "../scenes/projectDetails";
+import UserProjectsCopy from "../scenes/UserProjectscopy";
+import Projects2 from "../scenes/projects";
+import TeamCopy from "../scenes/team";
+import CahierDetails from "../scenes/souscahierdetestDetails";
 
 const PrivateRouter = ({ children }) => {
   const jwt = localStorage.getItem("jwt");
   const isAuthenticated = Boolean(jwt); // Simple check. Adjust according to your auth logic.
   const decoded = jwtDecode(jwt); // Assuming JWT is in action.payload.jwt
-  console.log("decodeddewdfe", decoded);
+
   const userRole = decoded.authorities;
-  console.log("Role:", userRole);
 
   return isAuthenticated ? (
     <MainLayout>
@@ -41,18 +44,23 @@ const PrivateRouter = ({ children }) => {
             <Route path="/affectation" element={<Affectation />} />
             <Route path="/affectation/:userId" element={<UserProjects />} />
             <Route path="/project/:projectId" element={<ProjectDetails />} />
+            <Route
+              path="/project/cahier/:souscahierdetestid"
+              element={<CahierDetails />}
+            />
           </>
         )}
         {userRole === "CHEF_DE_PROJECT" && (
           <>
             <Route path="/affectation" element={<Affectation />} />
-            <Route path="/affectation/:userId" element={<UserProjects />} />
+            <Route path="/affectation/:userId" element={<UserProjectsCopy />} />
             <Route path="/projects" element={<Projects />} />
           </>
         )}
         {userRole === "USER" && (
           <>
-            <Route path="/projects" element={<Projects />} />
+            <Route path="/projects" element={<Projects2 />} />
+            <Route path="/project2" element={<Projects />} />
             <Route path="/cahierglobal" element={<CahierDeTestGlobal />} />
           </>
         )}

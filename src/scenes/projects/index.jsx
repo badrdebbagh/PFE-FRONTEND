@@ -1,67 +1,28 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import { tokens } from "../../theme";
-import { mockDataTeam } from "../../data/mockData";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
-import Header from "../../components/Header";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useDispatch, useSelector } from "react-redux";
+import DataTable from "./data-table";
+
 import {
-  deleteUser,
+  assignProjectToUser,
   getProjects,
   getProjectsByUserId,
 } from "../../state/authentication/Action";
+import { useDispatch, useSelector } from "react-redux";
 
-const Projects = () => {
+import { Button } from "../../componentsShadn/ui/button";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../componentsShadn/ui/select";
+import { getProjectRoles } from "../../state/authentication/Action";
+
+const Projects2 = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const jwt = localStorage.getItem("jwt");
-  const isLoading = useSelector((state) => state.auth.isLoading);
-  const columns = [
-    { field: "projectId", headerName: "ID" },
-    {
-      field: "projectName",
-      headerName: "Nom du projet",
-      flex: 1,
-      cellClassName: "name-column--cell",
-      renderCell: (params) => (
-        <Button
-          color="secondary"
-          onClick={() => navigate(`/project/${params.id}`)} // Navigate on click
-        >
-          {params.value}
-        </Button>
-      ),
-    },
-
-    {
-      field: "description",
-      headerName: "Description",
-      flex: 1,
-    },
-    {
-      field: "userRole",
-      headerName: "Role",
-      flex: 1,
-    },
-  ];
-
   const projects = useSelector((state) => state.auth.projects);
-  console.log("projeecfetecdte", projects);
-
   useEffect(() => {
     const loadJWT = async () => {
       const token = await localStorage.getItem("jwt");
@@ -73,73 +34,40 @@ const Projects = () => {
     loadJWT();
   }, [dispatch]);
 
-  if (isLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="75vh"
-      >
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  const handleAddUser = () => {
+  const handleAddProject = () => {
     navigate("/addProject");
   };
 
+  const columns = [
+    {
+      accessorKey: "projectId",
+      header: "ID",
+    },
+    {
+      accessorKey: "projectName",
+      header: "Nom du projet",
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+    },
+    {
+      accessorKey: "userRole",
+      header: "Role",
+    },
+  ];
   return (
-    <Box m="20px">
-      <Header title="Projets" subtitle="Gestion des membres de l'equipe" />
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-        }}
-      >
-        <DataGrid
-          getRowId={(row) => row.projectId}
-          checkboxSelection
-          rows={projects}
-          columns={columns}
-        />
-        <Button
-          onClick={handleAddUser}
-          sx={{ mt: 2 }}
-          type="submit"
-          color="secondary"
-          variant="contained"
-        >
-          Creer nouveau projet
+    <div>
+      <div className="">
+        <DataTable columns={columns} data={projects} />
+      </div>
+      <div className=" flex items-center justify-center mt-6">
+        <Button onClick={handleAddProject} variant="secondary">
+          Assign Project to user
         </Button>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 
-export default Projects;
+export default Projects2;

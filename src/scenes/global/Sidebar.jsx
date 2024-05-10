@@ -118,9 +118,6 @@ const Sidebar = () => {
                 >
                   {decoded.firstName}
                 </Typography>
-                {/* <Typography variant="h5" color={colors.greenAccent[500]}>
-                  VP Fancy Admin
-                </Typography> */}
               </Box>
             </Box>
           )}

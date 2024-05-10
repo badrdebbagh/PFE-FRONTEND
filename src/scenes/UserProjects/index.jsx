@@ -64,7 +64,7 @@ const UserProjects = () => {
             labelId={`role-select-label-${params.id}`}
             id={`role-select-${params.id}`}
             value={selectedProjectRoles[params.id] || ""}
-            onChange={handleRoleChange(params.id)}
+            onChange={(event) => handleRoleChange(params.id, event)}
             onOpen={loadRoles}
             renderValue={(selected) => selected}
             MenuProps={{
@@ -98,9 +98,8 @@ const UserProjects = () => {
     },
   ];
 
-  const handleRoleChange = (projectId) => (event) => {
+  const handleRoleChange = (projectId, event) => {
     const { value } = event.target;
-
     setSelectedProjectRoles((prev) => ({
       ...prev,
       [projectId]: value,
