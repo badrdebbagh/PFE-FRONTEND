@@ -33,14 +33,14 @@ const CreateSousCahierDeTestForm = () => {
   const { projectId } = useParams();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
-  const domaineFromUrl = query.get("domaine");
+  const domaineId = query.get("domaine");
 
   const dispatch = useDispatch();
   const form = useForm({
     // resolver:zod
     defaultValues: {
       name: "",
-      domaine: domaineFromUrl,
+      domaineId: domaineId,
       sousdomaine: "",
     },
   });
@@ -70,9 +70,10 @@ const CreateSousCahierDeTestForm = () => {
       projectId,
       cahierDeTestGlobalId,
       name: data.name,
-      domaineId: data.domaine,
+      domaineId: domaineId,
       sousDomaineId: data.sousdomaine,
     };
+    console.log("sous cahjier data", sousCahierData);
     dispatch(createSousCahier(sousCahierData));
   };
 

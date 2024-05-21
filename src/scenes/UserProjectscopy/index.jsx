@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import DataTable from "./data-table";
 
 import {
+  assignDomaineToProjectForUser,
   assignProjectToUser,
   getProjects,
+  getProjectsByUserId,
 } from "../../state/authentication/Action";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,28 +18,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../componentsShadn/ui/select";
-import { getProjectRoles } from "../../state/authentication/Action";
+import { getProjectDomaines } from "../../state/authentication/Action";
 
 const UserProjectsCopy = () => {
   const projects = useSelector((state) => state.auth.projects);
-  const [rowSelection, setRowSelection] = useState({});
+
   const dispatch = useDispatch();
-  const { projectRoles } = useSelector((state) => state.auth);
+
   const { userId } = useParams();
 
-  const [selectedRoles, setSelectedRoles] = useState({});
+  const [selectedDomaines, setSelectedDomaines] = useState({});
 
-  const handleRoleChange = (projectId, role) => {
-    console.log(projectId);
-    setSelectedRoles((prevRoles) => ({
-      ...prevRoles,
-      [projectId]: role,
+  const handleRoleChange = (projectId, domaines) => {
+    console.log("projectID", projectId);
+    setSelectedDomaines((prevDomaines) => ({
+      ...prevDomaines,
+      [projectId]: domaines,
     }));
   };
 
-  const handleAssignProject = () => {
-    Object.keys(selectedRoles).forEach((projectId) => {
-      const role = selectedRoles[projectId];
+  const handleAssignDomaine = () => {
+    Object.keys(selectedDomaines).forEach((projectId) => {
+      const role = selectedDomaines[projectId];
       console.log(`Assigning role: ${role} to project ID: ${projectId}`);
       if (role) {
         dispatch(assignProjectToUser(userId, projectId, role));
@@ -46,20 +48,37 @@ const UserProjectsCopy = () => {
       }
     });
   };
+  const handleAssignProject = () => {
+    Object.keys(selectedDomaines).forEach((projectId) => {
+      const domaineId = selectedDomaines[projectId];
+      console.log(
+        `Assigning domaine: ${domaineId} to project ID: ${projectId} to user ID: ${userId}`
+      );
+      if (domaineId) {
+        dispatch(assignDomaineToProjectForUser(userId, domaineId, projectId));
+      } else {
+        console.log("No role selected for project:", projectId);
+      }
+    });
+  };
 
   useEffect(() => {
-    console.log(projects);
-    dispatch(getProjects());
-    dispatch(getProjectRoles());
-  }, [dispatch]);
+    const loadJWT = async () => {
+      const token = await localStorage.getItem("jwt");
+      if (token) {
+        dispatch(getProjectsByUserId(token));
+      }
+    };
 
+    loadJWT();
+  }, [dispatch]);
   const columns = [
     {
-      accessorKey: "id",
+      accessorKey: "projectId",
       header: "id",
     },
     {
-      accessorKey: "nom",
+      accessorKey: "projectName",
       header: "nom",
     },
     {
@@ -67,20 +86,24 @@ const UserProjectsCopy = () => {
       header: "Description",
     },
     {
-      id: "actions",
+      id: "domaines",
+      accessorKey: "domaines",
+      header: "Domaines",
       cell: ({ row }) => {
+        const projectId = row.original.projectId;
+
         return (
           <Select
-            value={selectedRoles[row.original.id] || ""}
-            onValueChange={(value) => handleRoleChange(row.original.id, value)}
+            value={selectedDomaines[projectId] || ""}
+            onValueChange={(value) => handleRoleChange(projectId, value)}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Role" />
+              <SelectValue placeholder="Domaines" />
             </SelectTrigger>
             <SelectContent>
-              {projectRoles.map((projectRole) => (
-                <SelectItem key={projectRole} value={projectRole}>
-                  {projectRole}
+              {row.original.domaines.map((domaine) => (
+                <SelectItem key={domaine.id} value={domaine.id}>
+                  {domaine.nom}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -94,10 +117,8 @@ const UserProjectsCopy = () => {
       <div className="">
         <DataTable columns={columns} data={projects} />
       </div>
-      <div className=" flex items-center justify-center mt-6">
-        <Button onClick={handleAssignProject} variant="secondary">
-          Assign Project to user
-        </Button>
+      <div>
+        <Button onClick={handleAssignProject}>Assign</Button>
       </div>
     </div>
   );

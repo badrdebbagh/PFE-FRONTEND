@@ -5,6 +5,7 @@ import {
   assignProjectToUser,
   getProjects,
   getProjectsByUserId,
+  getProjectsByUserIdAndDomain,
 } from "../../state/authentication/Action";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,16 +19,21 @@ import {
   SelectValue,
 } from "../../componentsShadn/ui/select";
 import { getProjectRoles } from "../../state/authentication/Action";
+import { jwtDecode } from "jwt-decode";
 
 const Projects2 = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const projects = useSelector((state) => state.auth.projects);
+
+
+
   useEffect(() => {
     const loadJWT = async () => {
       const token = await localStorage.getItem("jwt");
       if (token) {
-        dispatch(getProjectsByUserId(token));
+        dispatch(getProjectsByUserIdAndDomain(token));
       }
     };
 
@@ -36,6 +42,16 @@ const Projects2 = () => {
 
   const handleAddProject = () => {
     navigate("/addProject");
+  };
+
+  const [selectedDomaines, setSelectedDomaines] = useState({});
+
+  const handleRoleChange = (projectId, domaines) => {
+    console.log("projectID", projectId);
+    setSelectedDomaines((prevDomaines) => ({
+      ...prevDomaines,
+      [projectId]: domaines,
+    }));
   };
 
   const columns = [
@@ -52,8 +68,30 @@ const Projects2 = () => {
       header: "Description",
     },
     {
-      accessorKey: "userRole",
-      header: "Role",
+      id: "domaines",
+      accessorKey: "domaines",
+      header: "Domaines",
+      cell: ({ row }) => {
+        const projectId = row.original.projectId;
+
+        return (
+          <Select
+            value={selectedDomaines[projectId] || ""}
+            onValueChange={(value) => handleRoleChange(projectId, value)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Domaines" />
+            </SelectTrigger>
+            <SelectContent>
+              {row.original.domaines.map((domaine) => (
+                <SelectItem key={domaine.id} value={domaine.id}>
+                  {domaine.nom}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+      },
     },
   ];
   return (
@@ -61,11 +99,12 @@ const Projects2 = () => {
       <div className="">
         <DataTable columns={columns} data={projects} />
       </div>
-      <div className=" flex items-center justify-center mt-6">
-        <Button onClick={handleAddProject} variant="secondary">
-          Assign Project to user
-        </Button>
-      </div>
+
+      {/* <div className="flex items-center justify-center mt-6">
+          <Button onClick={handleAddProject} variant="secondary">
+            Assign Project to user
+          </Button>
+        </div> */}
     </div>
   );
 };

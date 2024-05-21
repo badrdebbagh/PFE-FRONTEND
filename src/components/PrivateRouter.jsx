@@ -10,7 +10,7 @@ import UserProjects from "../scenes/UserProjects";
 import { useEffect } from "react";
 import { getRoles } from "@testing-library/react";
 import Affectation from "../scenes/Affectation";
-import CahierDeTestGlobal from "../scenes/cahierDeTestGlobal";
+import CahierDeTestGlobal from "../scenes/tests";
 import { jwtDecode } from "jwt-decode";
 import Projects from "../scenes/projects";
 import ChefProjects from "../scenes/chefProjects";
@@ -21,6 +21,7 @@ import UserProjectsCopy from "../scenes/UserProjectscopy";
 import Projects2 from "../scenes/projects";
 import TeamCopy from "../scenes/team";
 import CahierDetails from "../scenes/souscahierdetestDetails";
+import Test2 from "../scenes/tests2";
 
 const PrivateRouter = ({ children }) => {
   const jwt = localStorage.getItem("jwt");
@@ -44,10 +45,7 @@ const PrivateRouter = ({ children }) => {
             <Route path="/affectation" element={<Affectation />} />
             <Route path="/affectation/:userId" element={<UserProjects />} />
             <Route path="/project/:projectId" element={<ProjectDetails />} />
-            <Route
-              path="/project/cahier/:souscahierdetestid"
-              element={<CahierDetails />}
-            />
+            <Route path="/projects/:projectId" element={<CahierDetails />} />
           </>
         )}
         {userRole === "CHEF_DE_PROJECT" && (
@@ -61,7 +59,9 @@ const PrivateRouter = ({ children }) => {
           <>
             <Route path="/projects" element={<Projects2 />} />
             <Route path="/project2" element={<Projects />} />
-            <Route path="/cahierglobal" element={<CahierDeTestGlobal />} />
+            {/* <Route path="/tests" element={<CahierDeTestGlobal />} /> */}
+            <Route path="/tests" element={<Test2 />} />
+            <Route path="/projects/:projectId" element={<CahierDetails />} />
           </>
         )}
       </Routes>

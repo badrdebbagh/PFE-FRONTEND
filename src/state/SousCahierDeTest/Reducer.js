@@ -28,6 +28,7 @@ export const sous_cahierReducer = (state = initialState, action) => {
         success: null,
       };
     case CREATE_SOUS_CAHIER_DE_TEST_SUCCESS:
+      
       return {
         ...state,
         isLoading: false,

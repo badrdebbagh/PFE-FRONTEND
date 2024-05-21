@@ -95,12 +95,12 @@ const Team = () => {
 
   return (
     <div>
-      <div>
+      <div className="px-8">
         <DataTable columns={columns} data={user} />
       </div>
       <div className=" flex items-center justify-center mt-6">
         <Button onClick={handleAddUser} variant="secondary">
-          Add User
+          Ajouter Utilisateur
         </Button>
       </div>
     </div>

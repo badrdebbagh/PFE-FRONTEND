@@ -38,6 +38,7 @@ const ProjectCard = ({ onSelectDomaine }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.auth.projects);
+
   const [selectedDomaines, setSelectedDomaines] = useState({});
   console.log(projects);
   useEffect(() => {
@@ -56,89 +57,124 @@ const ProjectCard = ({ onSelectDomaine }) => {
     }
   };
 
-  if (projects.length === 0) {
-    return <div>Loading...</div>;
-  }
+  // if (projects.length === 0) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
-    <div
-      className="space-y-5 mt-10 flex items-center justify-center flex-col  "
-      key={projects.length}
-    >
-      {projects.map((project) => {
-        const handleNavigate = (projectId) => {
-          const selectedDomaine = selectedDomaines[projectId];
-          if (!selectedDomaine) {
-            alert("Veuillez selectionner le domaine a consulter.");
-            return;
-          }
-          navigate(`/project/${projectId}?domaine=${selectedDomaine}`);
-        };
+    <div className="space-y-5 mt-10 " key={projects.length}>
+      <div className=" w-full flex flex-row  space-x-5 pl-10 shadow-[0_3px_10px_rgb(0,0,0,0.2)] h-[70px]  items-center  ">
+        <div>
+          {" "}
+          <Dialog variant="secondary">
+            <DialogTrigger className=" rounded-lg">
+              <Button variant="secondary" className=" rounded-md">
+                Creer un domaine
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>Creer un domaine</DialogHeader>
+              {/* <AjouterCahierDeTestGlobal projectId={project.id} /> */}
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div>
+          {" "}
+          <Dialog variant="secondary ">
+            <DialogTrigger className=" rounded-md w-full">
+              <Button variant="secondary" className=" rounded-md">
+                Creer un sous domaine
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>Creer un Sous Domaine</DialogHeader>
+              {/* <AjouterCahierDeTestGlobal projectId={project.id} /> */}
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+      <div className="flex items-center justify-center flex-col space-y-5">
+        {projects.map((project) => {
+          const handleNavigate = (projectId) => {
+            const selectedDomaine = selectedDomaines[projectId];
+            if (!selectedDomaine) {
+              alert("Veuillez selectionner le domaine a consulter.");
+              return;
+            }
+            navigate(`/project/${projectId}?domaine=${selectedDomaine}`);
+          };
 
-        return (
-          <Card key={project.id} className="ml-2 p-5 w-[1000px]">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <div className="flex items-center gap-5 ">
-                  <h1
-                    onClick={() => handleNavigate(project.id)}
-                    className="cursor-pointer font-bold text-lg"
-                  >
-                    {project.nom}
-                  </h1>
-                  <DotFilledIcon />
-                  <p className="text-md text-gray-400  ">
-                    <span className="text-xl text-black font-bold mr-2 ">
-                      Chef de Projet :
-                    </span>
-
-                    {project.chefDeProjet
-                      ? project.chefDeProjet
-                      : "Pas encore affecté "}
-                  </p>
-                </div>
-                <div className="flex gap-4 ">
-                  <div className="">
-                    <Dialog variant="secondary">
-                      <DialogTrigger className=" rounded-md">
-                        <Button className=" rounded-md">
-                          Ajouter un domaine
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          Creer nouveaux sous cahier de test
-                        </DialogHeader>
-                        <AjouterDomaine projectId={project.id} />
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                  <div>
-                    <Select
-                      value={selectedDomaines[project.id] || ""}
-                      onValueChange={(value) =>
-                        handleSelectDomaine(value, project.id)
-                      }
+          return (
+            <Card key={project.id} className="ml-2 p-5 w-[1000px]">
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <div className="flex items-center gap-5 ">
+                    <h1
+                      onClick={() => handleNavigate(project.id)}
+                      className="cursor-pointer font-bold text-lg"
                     >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Domaine" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {project.domaines.map((domaine) => (
-                          <SelectItem key={domaine.id} value={domaine.id}>
-                            {domaine.nom}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      {project.nom}
+                    </h1>
+                    <DotFilledIcon />
+                    <p className="text-md text-gray-400  ">
+                      <span className="text-xl text-black font-bold mr-2 ">
+                        Chef de Projet :
+                      </span>
+                      <span className="text-xl font-bold text-slate-900">
+                        {" "}
+                        {project.chefDeProjet ? project.chefDeProjet : "anas"}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="flex gap-4 ">
+                    <div className="">
+                      <Dialog variant="secondary">
+                        <DialogTrigger className=" rounded-md">
+                          <Button className=" rounded-md">
+                            Attribuer un domaine
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            Creer nouveaux sous cahier de test
+                          </DialogHeader>
+                          <AjouterDomaine projectId={project.id} />
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                    <div>
+                      <Select
+                        value={selectedDomaines[project.id] || ""}
+                        onValueChange={(value) =>
+                          handleSelectDomaine(value, project.id)
+                        }
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Domaine" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {project.domaines.length > 0 ? (
+                            project.domaines.map((domaine) => (
+                              <SelectItem key={domaine.id} value={domaine.id}>
+                                {domaine.nom}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem disabled className="text-left p-2 ">
+                              Veuillez attribuer un domaine
+                            </SelectItem>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
+                <p className="text-gray-500 text-sm">{project.description}</p>
               </div>
-              <p className="text-gray-500 text-sm">{project.description}</p>
-            </div>
-          </Card>
-        );
-      })}
+            </Card>
+          );
+        })}
+      </div>
       <div className=" flex items-center justify-center">
         <Button onClick={handleAddUser} variant="secondary">
           Ajouter un projet

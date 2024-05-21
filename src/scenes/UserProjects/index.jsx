@@ -186,15 +186,7 @@ const UserProjects = () => {
           columns={columns}
           getRowId={(row) => row.uniqueId || row.id}
         />
-        <Button
-          onClick={assignProjectsToUser}
-          sx={{ mt: 2 }}
-          type="submit"
-          color="secondary"
-          variant="contained"
-        >
-          Affecter projet a lutilisateur
-        </Button>
+       
       </Box>
     </Box>
   );

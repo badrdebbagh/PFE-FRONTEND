@@ -6,9 +6,12 @@ function MainLayout({ children }) {
   const [isSidebar, setIsSidebar] = useState(true);
 
   return (
-    <div className="app">
+    <div
+      className="app"
+      style={{ display: "flex", height: "100vh", overflow: "hidden" }}
+    >
       <Sidebar isSidebar={isSidebar} />
-      <main className="content">
+      <main className="content" style={{ flexGrow: 1, overflowY: "auto" }}>
         <Topbar setIsSidebar={setIsSidebar} />
         {children}
       </main>

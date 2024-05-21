@@ -53,6 +53,7 @@ const Sidebar = () => {
   return (
     <Box
       sx={{
+        height: "100vh",
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
         },
@@ -173,6 +174,13 @@ const Sidebar = () => {
                 <Item
                   title="Projects"
                   to="/projects"
+                  icon={<HomeOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Tests"
+                  to="/tests"
                   icon={<HomeOutlinedIcon />}
                   selected={selected}
                   setSelected={setSelected}

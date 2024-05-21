@@ -42,9 +42,9 @@ function DataTable({ columns, data }) {
       <div className="flex items-center py-4 px-12 ">
         <Input
           placeholder="Recherche un projet"
-          value={table.getColumn("nom")?.getFilterValue() || ""}
+          value={table.getColumn("projectName")?.getFilterValue() || ""}
           onChange={(event) =>
-            table.getColumn("nom")?.setFilterValue(event.target.value)
+            table.getColumn("projectName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

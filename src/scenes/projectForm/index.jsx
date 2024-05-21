@@ -53,14 +53,15 @@ const ProjectForm = () => {
   const dispatch = useDispatch();
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-  const user = useSelector((state) =>
+  const users = useSelector((state) =>
     state.auth.user.filter((user) => user.role === "CHEF_DE_PROJECT")
   );
-  
 
   const form = useForm({
     defaultValues: {
+     
       description: "",
+      
     },
   });
 
@@ -69,10 +70,11 @@ const ProjectForm = () => {
   const handleAddProject = () => {
     const projectData = {
       userId: selectedUserId,
-      nom: projectName,
+      projectName: projectName,
       description: projectDescription,
       role: "CHEF_DE_PROJECT",
     };
+
     dispatch(addProject(projectData));
   };
 
@@ -136,25 +138,24 @@ const ProjectForm = () => {
                 <div>
                   <FormField
                     control={form.control}
-                    name="description"
+                    name="role"
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl className="w-full">
-                          <Label htmlFor="description">Chef de projet</Label>
+                          <Label className="mb-2" htmlFor="description">
+                            Chef de projet
+                          </Label>
                           <Select
-                            onValueChange={handleSelectChange}
                             value={field.value}
+                            onValueChange={handleSelectChange}
                           >
                             <SelectTrigger>
                               <SelectValue placeholder="Selectionner chef de projet" />
                             </SelectTrigger>
 
                             <SelectContent>
-                              {user.map((user) => (
-                                <SelectItem
-                                  key={user.firstName}
-                                  value={user.id}
-                                >
+                              {users.map((user) => (
+                                <SelectItem key={user.id} value={user.id}>
                                   {user.firstName} {user.lastName}
                                 </SelectItem>
                               ))}

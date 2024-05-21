@@ -26,6 +26,7 @@ import {
 const AjouterDomaine = ({ projectId }) => {
   const dispatch = useDispatch();
   const domaines = useSelector((state) => state.auth.domaines);
+  const projects = useSelector((state) => state.auth.projects);
 
   const form = useForm({
     // resolver:zod
@@ -43,6 +44,10 @@ const AjouterDomaine = ({ projectId }) => {
   useEffect(() => {
     dispatch(getDomaines());
   }, []);
+
+  useEffect(() => {
+    console.log("Projects updated, force re-render if necessary", projects);
+  }, [projects]);
 
   return (
     <div>
@@ -80,7 +85,7 @@ const AjouterDomaine = ({ projectId }) => {
 
           <DialogClose>
             <Button type="submit" className="w-full my-5">
-              Creer Cahier De Test
+              Confimer
             </Button>
           </DialogClose>
         </form>

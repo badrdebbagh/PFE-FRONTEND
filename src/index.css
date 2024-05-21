@@ -12,6 +12,9 @@ body,
   height: 100%;
   width: 100%;
   font-family: "Source Sans Pro", sans-serif;
+  /* display: flex; */
+  height: 100vh; /* Force the application to be full viewport height */
+  overflow: hidden;
 }
 
 .app {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Input } from "../../componentsShadn/ui/input";
 import {
   Form,
@@ -20,27 +20,46 @@ import { DialogClose } from "../../componentsShadn/ui/dialog";
 import { useForm } from "react-hook-form";
 import { Diversity1 } from "@mui/icons-material";
 import { useLocation, useParams } from "react-router-dom";
-import { createFunctionnality } from "../../state/authentication/Action";
-import { useDispatch } from "react-redux";
+import {
+  createCasTest,
+  createFunctionnality,
+} from "../../state/authentication/Action";
+import { useDispatch, useSelector } from "react-redux";
 
-const AjouterFonctionnalite = ({ buttonText }) => {
+const AjouterCasTest = ({ fonctionnaliteId }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const domaineId = query.get("domaine");
   const { projectId } = useParams();
   const cahierDeTestId = query.get("souscahierdetestid");
+  const testCases = useSelector((state) => state.auth.testCases);
+
+  useEffect(() => {
+    console.log(
+      "Received fonctionnaliteId in AjouterCasTest:",
+      fonctionnaliteId
+    ); // Debugging line
+  }, [fonctionnaliteId]);
 
   const form = useForm({
     // resolver:zod
     defaultValues: {
-      nom: "",
+      titre: "",
+      description: "",
     },
   });
 
   const onSubmit = (data) => {
     dispatch(
-      createFunctionnality(data.nom, domaineId, projectId, cahierDeTestId)
+      createCasTest(
+        data.titre,
+        data.description,
+        domaineId,
+        fonctionnaliteId,
+        projectId,
+        cahierDeTestId
+      )
     );
   };
   return (
@@ -49,7 +68,7 @@ const AjouterFonctionnalite = ({ buttonText }) => {
         <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
-            name="nom"
+            name="titre"
             render={({ field }) => (
               <FormItem>
                 <FormControl className=" w-full">
@@ -57,7 +76,24 @@ const AjouterFonctionnalite = ({ buttonText }) => {
                     {...field}
                     type="text"
                     className="border w-full py-5 px-5 "
-                    placeholder="Nom de la fonctionalité"
+                    placeholder="Titre"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl className=" w-full">
+                  <Input
+                    {...field}
+                    type="text"
+                    className="border w-full py-5 px-5 "
+                    placeholder="Description"
                   />
                 </FormControl>
                 <FormMessage />
@@ -67,7 +103,7 @@ const AjouterFonctionnalite = ({ buttonText }) => {
 
           <DialogClose>
             <Button type="submit" className="w-full my-5">
-              {buttonText}
+              Creer
             </Button>
           </DialogClose>
         </form>
@@ -76,4 +112,4 @@ const AjouterFonctionnalite = ({ buttonText }) => {
   );
 };
 
-export default AjouterFonctionnalite;
+export default AjouterCasTest;
