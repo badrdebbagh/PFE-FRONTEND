@@ -33,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../componentsShadn/ui/select";
+import UploadExcel from "../uploadExcel";
 
 const ProjectDetails = ({ onSelectSousDomaine }) => {
   const navigate = useNavigate();
@@ -41,18 +42,12 @@ const ProjectDetails = ({ onSelectSousDomaine }) => {
 
   const [project, setProject] = useState(null);
   const sous_cahiers = useSelector((state) => state.sous_cahier.sous_cahiers);
-  console.log('sous cahier' , sous_cahiers);
+  console.log("sous cahier", sous_cahiers);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const selectedDomaine = query.get("domaine");
-  const [selectedSousDomaines, setSelectedSousDomaines] = useState({});
-  const sous_domaines = useSelector((state) => state.auth.sous_domaines);
 
-  const domaineId = query.get("domaine");
-
-  const filteredSousDomaines = sous_domaines.filter(
-    (sous_domaine) => sous_domaine.domaine.id.toString() === domaineId
-  );
+  const [selectedSousDomaineId, setSelectedSousDomaineId] = useState(null);
 
   // const projects = useSelector((state) => state.auth.projects);
   useEffect(() => {
@@ -93,7 +88,7 @@ const ProjectDetails = ({ onSelectSousDomaine }) => {
   return (
     <div className="space-y-5 ">
       {/* First Card */}
-      {project ? (
+      {/* {project ? (
         project.cahierDeTestGlobalId ? (
           <div className="ml-2">
             <h1 className="text-lg mb-4 font-bold">Cahier De Test global:</h1>
@@ -138,11 +133,11 @@ const ProjectDetails = ({ onSelectSousDomaine }) => {
         )
       ) : (
         <p>Loading project details...</p>
-      )}
+      )} */}
 
       {/* Sous Cahier De Tests Card */}
 
-      <div className="space-y-5">
+      <div className="space-y-5 ">
         <div className="ml-2">
           <h1 className="text-lg mb-4 font-bold">Sous Cahier De Tests</h1>
         </div>
@@ -190,8 +185,8 @@ const ProjectDetails = ({ onSelectSousDomaine }) => {
         )}
       </div>
 
-      <div className="flex items-center justify-center">
-        <div className="mt-4">
+      <div className="flex items-center   justify-end gap-4 mr-8 ">
+        <div className="">
           <Dialog variant="secondary">
             <DialogTrigger>
               <Button variant="secondary">Nouveau cahier de test </Button>
@@ -199,6 +194,22 @@ const ProjectDetails = ({ onSelectSousDomaine }) => {
             <DialogContent>
               <DialogHeader>Creer nouveaux sous cahier de test</DialogHeader>
               <CreateSousCahierDeTestForm />
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        <div>
+          <Dialog variant="secondary">
+            <DialogTrigger className=" rounded-md">
+              <Button variant="secondary" className=" rounded-md">
+                Charger un cahier de test
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <UploadExcel
+                projectId={projectId}
+                selectedDomaine={selectedDomaine}
+              />
             </DialogContent>
           </Dialog>
         </div>

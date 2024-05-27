@@ -19,9 +19,9 @@ import {
   SelectValue,
 } from "../../componentsShadn/ui/select";
 import { useDispatch, useSelector } from "react-redux";
-import { addDomaine, addSousDomaine } from "../../state/authentication/Action";
+import { addSousDomaine } from "../../state/authentication/Action";
 
-const AjouterDomaine = () => {
+const AjouterSousDomaine = () => {
   const dispatch = useDispatch();
   const form = useForm({
     // resolver:zod
@@ -31,10 +31,10 @@ const AjouterDomaine = () => {
   });
 
   const onSubmit = (data) => {
-    const domaineData = {
-      nom: data.nom,
+    const sousDomaineData = {
+      name: data.nom,
     };
-    dispatch(addDomaine(domaineData));
+    dispatch(addSousDomaine(sousDomaineData))
   };
   return (
     <div>
@@ -50,7 +50,7 @@ const AjouterDomaine = () => {
                     {...field}
                     type="text"
                     className="border w-full py-5 px-5 "
-                    placeholder="Nom du domaine"
+                    placeholder="Nom du sous domaine"
                   />
                 </FormControl>
                 <FormMessage />
@@ -69,4 +69,4 @@ const AjouterDomaine = () => {
   );
 };
 
-export default AjouterDomaine;
+export default AjouterSousDomaine;

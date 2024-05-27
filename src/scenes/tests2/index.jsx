@@ -18,9 +18,20 @@ import { Button } from "../../componentsShadn/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchUserProjects,
+  getTestResults,
   submitTestResult,
 } from "../../state/authentication/Action";
 import { jwtDecode } from "jwt-decode";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Textarea } from "../../componentsShadn/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../../componentsShadn/ui/card";
 
 const Test2 = () => {
   // return (
@@ -91,9 +102,10 @@ const Test2 = () => {
   //   </div>
   // );
   const dispatch = useDispatch();
-
+  const location = useLocation();
+  const navigate = useNavigate();
   const projectsData = useSelector((state) => state.auth.projectsData);
-  console.log("fefeefdef", projectsData);
+
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState(null);
   const [selectedCahierDeTest, setSelectedCahierDeTest] = useState(null);
@@ -103,24 +115,108 @@ const Test2 = () => {
   const [showFunctionalities, setShowFunctionalities] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  const [testResults, setTestResults] = useState({});
-  const error = useSelector((state) => state.auth.testError);
-  console.error("ERROR", error);
-  const success = useSelector((state) => state.auth.testSuccessfull);
-  console.error("sucess", success);
+  const [tempSelectedProject, setTempSelectedProject] = useState(null);
+  const [tempSelectedDomain, setTempSelectedDomain] = useState(null);
+  const [tempFilteredCahierDeTests, setTempFilteredCahierDeTests] = useState(
+    []
+  );
+  const [tempSelectedCahierDeTest, setTempSelectedCahierDeTest] =
+    useState(null);
 
+  // const [testResults, setTestResults] = useState({});
+  const [commentText, setCommentText] = useState("");
+  const [activeDescriptionId, setActiveDescriptionId] = useState(null);
+
+  const error = useSelector((state) => state.auth.testError);
+
+  const success = useSelector((state) => state.auth.testSuccessfull);
+
+  const testResults = useSelector((state) => state.auth.testResults);
+  console.log("fefefe", testResults);
   const jwt = localStorage.getItem("jwt");
 
   const decoded = jwtDecode(jwt);
 
   const userId = decoded.userId;
 
+  const updateURLParams = (projectId, domainId, cahierDeTestId) => {
+    const params = new URLSearchParams();
+    if (projectId) params.set("project", projectId);
+    if (domainId) params.set("domain", domainId);
+    if (cahierDeTestId) params.set("cahierDeTest", cahierDeTestId);
+    return params.toString();
+  };
+
   useEffect(() => {
     dispatch(fetchUserProjects(userId));
   }, [dispatch, userId]);
+
+  useEffect(() => {
+    if (projectsData && projectsData.projets && projectsData.cahierDeTests) {
+      const params = new URLSearchParams(location.search);
+      const projectId = params.get("project");
+      const domainId = params.get("domain");
+      const cahierDeTestId = params.get("cahierDeTest");
+
+      if (projectId) {
+        const project = projectsData.projets.find(
+          (project) => project.id === parseInt(projectId)
+        );
+
+        if (project) {
+          setSelectedProject(project);
+
+          if (domainId) {
+            const cahierDeTests = projectsData.cahierDeTests.filter(
+              (cdt) => cdt.domaine && cdt.domaine.id === parseInt(domainId)
+            );
+
+            if (cahierDeTests.length > 0) {
+              setSelectedDomain(domainId);
+              setFilteredCahierDeTests(cahierDeTests);
+
+              if (cahierDeTestId) {
+                const selectedCahier = cahierDeTests.find(
+                  (cdt) => cdt.id === parseInt(cahierDeTestId)
+                );
+                if (selectedCahier) {
+                  setSelectedCahierDeTest(cahierDeTestId);
+                  setSelectedFonctionnalites(selectedCahier.fonctionnalites);
+                  setShowFunctionalities(true);
+                } else {
+                  console.warn("Cahier de Test not found:", cahierDeTestId);
+                }
+              }
+            } else {
+              console.warn("No Cahier de Tests found for domain:", domainId);
+            }
+          }
+        } else {
+          console.warn("Project not found:", projectId);
+        }
+      }
+    }
+  }, [location.search, projectsData, dispatch]);
+
+  useEffect(() => {
+    if (selectedCahierDeTest) {
+      dispatch(getTestResults(null, selectedCahierDeTest));
+    }
+  }, [selectedCahierDeTest, dispatch]);
+
+  useEffect(() => {
+    if (selectedCahierDeTest) {
+      const cahierDeTest = filteredCahierDeTests.find(
+        (cdt) => cdt.id === parseInt(selectedCahierDeTest)
+      );
+      setSelectedFonctionnalites(
+        cahierDeTest ? cahierDeTest.fonctionnalites : []
+      );
+    }
+  }, [selectedCahierDeTest, filteredCahierDeTests]);
+
   const handleCahierDeTestChange = (cahierDeTestId) => {
-    console.log("Selected Cahier de Test ID:", cahierDeTestId);
-    setSelectedCahierDeTest(cahierDeTestId);
+    setTempSelectedCahierDeTest(cahierDeTestId);
   };
 
   const handleProjectChange = (projectId) => {
@@ -128,64 +224,88 @@ const Test2 = () => {
       (project) => project.id === parseInt(projectId)
     );
 
-    setSelectedProject(project);
-    setShowFunctionalities(false);
-    setSelectedDomain(null);
-    setFilteredCahierDeTests([]);
-    setSelectedCahierDeTest(null);
+    setTempSelectedProject(project);
+    setTempSelectedDomain(null); // Reset domain and cahier de tests related state
+    setTempFilteredCahierDeTests([]);
+    setTempSelectedCahierDeTest(null);
   };
 
   const handleDomainChange = (domainId) => {
-    console.log("Selected Domain ID:", domainId);
     const cahierDeTests = projectsData.cahierDeTests.filter(
       (cdt) => cdt.domaine && cdt.domaine.id === parseInt(domainId)
     );
-    console.log("Filtered Cahier de Tests:", cahierDeTests);
-    setSelectedDomain(domainId);
-    setFilteredCahierDeTests(cahierDeTests);
-    setShowFunctionalities(false);
+
+    setTempSelectedDomain(domainId);
+    setTempFilteredCahierDeTests(cahierDeTests);
+    setTempSelectedCahierDeTest(null); // Reset cahier de tests and functionalities
   };
 
   const handleConfirm = () => {
-    console.log("called");
-    if (selectedCahierDeTest) {
-      console.log(selectedCahierDeTest);
-      const cahierDeTest = filteredCahierDeTests.find(
-        (cdt) => cdt.id === selectedCahierDeTest
+    if (tempSelectedCahierDeTest) {
+      const cahierDeTest = tempFilteredCahierDeTests.find(
+        (cdt) => cdt.id === tempSelectedCahierDeTest
       );
-      console.log("Found Cahier de Test:", cahierDeTest);
+
       setSelectedFonctionnalites(
         cahierDeTest ? cahierDeTest.fonctionnalites : []
       );
       setShowFunctionalities(true);
       setPopoverOpen(false);
+
+      setSelectedProject(tempSelectedProject);
+      setSelectedDomain(tempSelectedDomain);
+      setSelectedCahierDeTest(tempSelectedCahierDeTest);
+
+      const newUrl = updateURLParams(
+        tempSelectedProject.id,
+        tempSelectedDomain,
+        tempSelectedCahierDeTest
+      );
+      navigate(`?${newUrl}`);
     }
   };
 
-  const handleTestResult = (descriptionId, status) => {
+  const handleTestResult = async (descriptionId, status) => {
+    if (status === "KO") {
+      setActiveDescriptionId(descriptionId);
+    } else {
+      const testResultData = {
+        status,
+        testCaseDescriptionId: descriptionId,
+        comment: null,
+        cahierDeTestId: selectedCahierDeTest, // No comment for OK status
+      };
+      await dispatch(submitTestResult(testResultData));
+      await dispatch(getTestResults(descriptionId, selectedCahierDeTest));
+    }
+  };
+
+  const handleCommentSubmit = async (descriptionId) => {
     const testResultData = {
-      status,
+      status: "KO",
+      comment: commentText,
       testCaseDescriptionId: descriptionId,
+      cahierDeTestId: selectedCahierDeTest,
     };
 
-    dispatch(submitTestResult(testResultData));
+    await dispatch(submitTestResult(testResultData));
+    await dispatch(getTestResults(descriptionId, selectedCahierDeTest));
 
-    // Update local state with the result
-    setTestResults((prevResults) => ({
-      ...prevResults,
-      [descriptionId]: status,
-    }));
+    // Reset comment text and active description ID
+    setCommentText("");
+    setActiveDescriptionId(null);
   };
+
   return (
-    <div className="bg-white min-h-screen ">
-      <div className="m">
+    <div className=" bg-white h-screen ">
+      <div className="h-full">
         {/* confirmer div */}
         <div className="bg-gray-100 ">
-          <div className="flex justify-end p-2  mt-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-            <div className="mr-12  ">
+          <div className="flex items-center justify-center p-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+            <div>
               <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                 <PopoverTrigger asChild>
-                  <Button className="bg-slate-700">Determiner </Button>
+                  <Button className="bg-slate-700">Choisir </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
                   <div className="grid gap-4">
@@ -223,20 +343,20 @@ const Test2 = () => {
                         <Label htmlFor="Domains">Domaines</Label>
                         <Select
                           onValueChange={handleDomainChange}
-                          disabled={!selectedProject}
+                          disabled={!tempSelectedProject}
                         >
                           <SelectTrigger className="col-span-2 h-8">
                             <SelectValue placeholder="Domaines" />
                           </SelectTrigger>
                           <SelectContent>
-                            {selectedProject?.domaines?.length > 0 ? (
-                              selectedProject.domaines.map((domaine) => (
+                            {tempSelectedProject?.domaines?.length > 0 ? (
+                              tempSelectedProject.domaines.map((domaine) => (
                                 <SelectItem key={domaine.id} value={domaine.id}>
                                   {domaine.nom}
                                 </SelectItem>
                               ))
                             ) : (
-                              <SelectItem value="no domains avaialble" disabled>
+                              <SelectItem value="no domains available" disabled>
                                 No domains available
                               </SelectItem>
                             )}
@@ -247,14 +367,14 @@ const Test2 = () => {
                         <Label htmlFor="CahierDeTests">Cahier de Tests</Label>
                         <Select
                           onValueChange={handleCahierDeTestChange}
-                          disabled={!selectedDomain}
+                          disabled={!tempSelectedDomain}
                         >
                           <SelectTrigger className="col-span-2 h-8">
                             <SelectValue placeholder="Cahier de Tests" />
                           </SelectTrigger>
                           <SelectContent>
-                            {filteredCahierDeTests?.length > 0 ? (
-                              filteredCahierDeTests.map((cdt) => (
+                            {tempFilteredCahierDeTests?.length > 0 ? (
+                              tempFilteredCahierDeTests.map((cdt) => (
                                 <SelectItem key={cdt.id} value={cdt.id}>
                                   {cdt.name}
                                 </SelectItem>
@@ -282,85 +402,139 @@ const Test2 = () => {
         </div>
 
         {showFunctionalities && (
-          <div className="mt-10  ">
-            {selectedFonctionnalites.length > 0 ? (
+          <div className="mt-10 bg-full ">
+            {selectedFonctionnalites && selectedFonctionnalites.length > 0 ? (
               selectedFonctionnalites.map((fonctionnalite) => (
                 <div
                   key={fonctionnalite.id}
                   className=" p-6 rounded-lg shadow mb-6 text-black bg-gray-200 mx-4  "
                 >
                   <div className="shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-gray-100 flex flex-row items-center justify-center rounded-lg p-2 ">
+                    <h1 className="text-3xl font-bold mr-4">
+                      Fonctionnalité :{" "}
+                    </h1>
                     <h3 className="text-2xl font-semibold ">
                       {fonctionnalite.nom}
                     </h3>
                   </div>
 
-                  <h4 className="text-xl font-semibold mt-4">Test Cases</h4>
-                  <ul className="list-disc list-inside">
+                  <h4 className="text-3xl font-semibold mt-4 mb-2">
+                    Test Cases
+                  </h4>
+                  <ul className="list-disc list-inside ">
                     {fonctionnalite.casTests?.length > 0 ? (
                       fonctionnalite.casTests.map((test) => (
                         <li key={test.id} className="mb-2 list-none">
-                          <span className="text-black uppercase text-lg underline ">
-                            {test.titre}
-                          </span>
+                          <div className="flex gap-6 items-center">
+                            <p className="text-xl font-bold">Cas de test :</p>
+                            <span className="text-black uppercase text-lg underline ">
+                              {test.titre}
+                            </span>
+                          </div>
+
                           {/* <Button className="ml-4 px-2 py-1  rounded">
                             Execute Test
                           </Button> */}
-                          <ul className="ml-6 mt-2   ">
+                          <ul className="ml-6 mt-2  ">
                             {test.testCaseDescriptions?.length > 0 ? (
                               test.testCaseDescriptions.map((desc) => (
-                                <li
+                                <div
                                   key={desc.id}
-                                  className="text-black  flex justify-between border border-amber-700 rounded-lg mb-2 py-6 px-2 "
+                                  className="text-black flex border border-amber-700 rounded-lg mb-2 py-6 px-4 justify-between  "
                                 >
-                                  <div className="flex gap-6   ">
-                                    <div>
-                                      <span className="uppercase text-gray-400 font-bold mr-4">
-                                        {" "}
+                                  <div className="flex w-1/2 border-6 ">
+                                    <div className="w-full h-full   ">
+                                      <span className="uppercase text-gray-400 font-bold mr-4 text-2xl">
                                         Action:
-                                      </span>{" "}
-                                      {desc.description}
-                                    </div>
-                                    <div>
-                                      <span className="uppercase text-gray-400 font-bold mr-4">
-                                        {" "}
-                                        Resultat Attendu:
-                                      </span>{" "}
-                                      {desc.resultatAttendu}
+                                      </span>
+                                      <div className=" text-md px-4 whitespace-pre-wrap bg-white/45 w-full rounded-xl py-2">
+                                        {desc.description}
+                                      </div>
                                     </div>
                                   </div>
-
-                                  <div className="flex gap-4">
+                                  <div className="flex gap-4  items-center ml-6  w-1/2  ">
                                     {testResults[desc.id] ? (
-                                      testResults[desc.id] === "OK" ? (
-                                        <div className="text-green-800">
+                                      testResults[desc.id].status === "OK" ? (
+                                        <div className="text-green-800 text-xl font-bold">
                                           Test Reussi
                                         </div>
                                       ) : (
-                                        <div className="text-red-800">
-                                          Test Non Reussi
+                                        <div className=" text-xl font-bold  ">
+                                          <div className="flex gap-6 items-center  ">
+                                            <h1 className="text-2xl text-gray-400">
+                                              Status :
+                                            </h1>
+                                            <span className="text-red-900">
+                                              {" "}
+                                              Test Non Reussi.
+                                            </span>
+                                          </div>
+
+                                          {testResults[desc.id].comment && (
+                                            <div className="mt-2  p-2 w-full overflow-hidden  ">
+                                              <h1 className="text-slate-500 underline">
+                                                Commentaire:
+                                              </h1>
+                                              <div className=" overflow-auto h-full bg-white/45 rounded-xl p-4 mt-4">
+                                                <p
+                                                  placeholder="Commentaire"
+                                                  className="break-words"
+                                                >
+                                                  {" "}
+                                                  {testResults[desc.id].comment}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          )}
                                         </div>
                                       )
                                     ) : (
-                                      <>
-                                        <Button
-                                          onClick={() =>
-                                            handleTestResult(desc.id, "OK")
-                                          }
-                                        >
-                                          OK
-                                        </Button>
-                                        <Button
-                                          onClick={() =>
-                                            handleTestResult(desc.id, "KO")
-                                          }
-                                        >
-                                          KO
-                                        </Button>
-                                      </>
+                                      <div className="w-full  ">
+                                        {activeDescriptionId === desc.id ? (
+                                          <div className="pt-8  flex justify-end flex-col ">
+                                            <div>
+                                              {" "}
+                                              <Textarea
+                                                className="whitespace-pre-wrap"
+                                                placeholder="Enter comment"
+                                                value={commentText}
+                                                onChange={(e) =>
+                                                  setCommentText(e.target.value)
+                                                }
+                                              />
+                                            </div>
+                                            <div className="flex justify-end mt-4">
+                                              <Button
+                                                onClick={() =>
+                                                  handleCommentSubmit(desc.id)
+                                                }
+                                              >
+                                                Submit Comment
+                                              </Button>
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <div className="flex justify-end gap-6  w-full">
+                                            <Button
+                                              onClick={() =>
+                                                handleTestResult(desc.id, "OK")
+                                              }
+                                            >
+                                              OK
+                                            </Button>
+                                            <Button
+                                              onClick={() =>
+                                                handleTestResult(desc.id, "KO")
+                                              }
+                                            >
+                                              KO
+                                            </Button>
+                                          </div>
+                                        )}
+                                      </div>
                                     )}
                                   </div>
-                                </li>
+                                </div>
                               ))
                             ) : (
                               <li className="text-gray-500">
@@ -377,7 +551,29 @@ const Test2 = () => {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">No functionalities available</p>
+              <div className=" bg-gray-200 shadow-[0_3px_10px_rgb(0,0,0,0.2)] h-screen">
+                <div className="flex justify-center items-center flex-col gap-4 py-4">
+                  <div>
+                    {" "}
+                    <p className="text-black text-xl font-bold ">
+                      Pas de fonctionnalités encore disponible
+                    </p>{" "}
+                  </div>
+
+                  <div className="bg-white">
+                    <Button
+                      className="bg-red-900 text-white"
+                      onClick={() =>
+                        navigate(
+                          `/projects/${selectedProject?.id}?domaine=${selectedDomain}&souscahierdetestid=${selectedCahierDeTest}`
+                        )
+                      }
+                    >
+                      Creer des fonctionnalités
+                    </Button>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         )}

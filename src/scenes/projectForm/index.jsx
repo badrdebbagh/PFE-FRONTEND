@@ -48,8 +48,7 @@ import { useForm } from "react-hook-form";
 
 const ProjectForm = () => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const colorMode = useContext(ColorModeContext);
+  const { toast } = useToast();
   const dispatch = useDispatch();
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
@@ -59,15 +58,13 @@ const ProjectForm = () => {
 
   const form = useForm({
     defaultValues: {
-     
       description: "",
-      
     },
   });
 
   const [selectedUserId, setSelectedUserId] = useState(null);
 
-  const handleAddProject = () => {
+  const handleAddProject = async () => {
     const projectData = {
       userId: selectedUserId,
       projectName: projectName,
@@ -75,7 +72,17 @@ const ProjectForm = () => {
       role: "CHEF_DE_PROJECT",
     };
 
-    dispatch(addProject(projectData));
+    try {
+      await dispatch(addProject(projectData));
+      toast({
+        description: "Projet Ajouté avec succés",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "Echec de creation de projet",
+      });
+    }
   };
 
   const ITEM_HEIGHT = 48;

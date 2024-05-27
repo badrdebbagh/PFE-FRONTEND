@@ -52,6 +52,8 @@ const CahierDetails = () => {
   console.log("ccede", testCases);
   const navigate = useNavigate();
   const [fonctionnaliteId, setFonctionnaliteId] = useState(null);
+  const [selectedFonctionnaliteIdForTest, setSelectedFonctionnaliteIdForTest] =
+    useState(null);
 
   const [selectedTestCase, setSelectedTestCase] = useState(null);
   const [openFonctionnaliteDialog, setOpenFonctionnaliteDialog] =
@@ -59,7 +61,6 @@ const CahierDetails = () => {
   const [openCasTestDialog, setOpenCasTestDialog] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
 
   const jwt = localStorage.getItem("jwt");
   const location = useLocation();
@@ -71,7 +72,6 @@ const CahierDetails = () => {
   const domaineId = query.get("domaine");
   const cahierDeTestId = query.get("souscahierdetestid");
   const testCaseId = query.get("testcase");
-  const [mappedFonctionnalites, setMappedFonctionnalites] = useState([]);
 
   const { projectId } = useParams();
 
@@ -166,12 +166,24 @@ const CahierDetails = () => {
     setExpectedResultText("");
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      setActionText(actionText + "\n");
+    }
+  };
+
+  const handleAddTestCaseClick = (fonctionnaliteId) => {
+    setSelectedFonctionnaliteIdForTest(fonctionnaliteId);
+    setOpenCasTestDialog(true);
+  };
+
   return (
     <div className=" pt-4 bg-white h-screen  ">
       <div className=" flex flex-row h-[100vh] pt-4 ">
         <div className=" w-1/3  border-r-2 border-inherit ">
           {" "}
-          <div className=" flex flex-row justify-around bg-red-900">
+          <div className=" flex flex-row justify-around ">
             <div>
               <TooltipProvider>
                 <Tooltip>
@@ -302,7 +314,8 @@ const CahierDetails = () => {
                       </Button>
                     )}
                   </div>
-                  <div className=" flex items-center justify-center bg-red-900">
+                  {/* add test cases */}
+                  <div className=" flex items-center justify-center ">
                     {" "}
                     <TooltipProvider>
                       <Tooltip>
@@ -310,7 +323,9 @@ const CahierDetails = () => {
                           <Button
                             variant="primary"
                             className="rounded-md text-sm "
-                            onClick={() => setOpenCasTestDialog(true)}
+                            onClick={() =>
+                              handleAddTestCaseClick(fonctionnalité.id)
+                            }
                           >
                             <FontAwesomeIcon
                               className="text-black text-xs"
@@ -329,7 +344,7 @@ const CahierDetails = () => {
                           <DialogContent>
                             <DialogHeader>Creer un cas de test</DialogHeader>
                             <AjouterCasTest
-                              fonctionnaliteId={fonctionnaliteId}
+                              fonctionnaliteId={selectedFonctionnaliteIdForTest}
                             />
                           </DialogContent>
                         </Dialog>
@@ -430,7 +445,7 @@ const CahierDetails = () => {
                     {descriptions.map((description, index) => (
                       <div
                         key={index}
-                        className="h-full flex justify-evenly mb-4 bg-white rounded-md w-full pb-4 "
+                        className="h-full flex  mb-4 bg-white rounded-md w-full pb-4 "
                       >
                         <p className="basis-32  flex justify-center items-center text-xl font-bold text-gray-600 ">
                           {index + 1}
@@ -439,39 +454,35 @@ const CahierDetails = () => {
                         <div className="w-1/2">
                           <h1 className="text-base font-bold  ">Action</h1>
 
-                          <p className="">{description.description}</p>
+                          <p
+                            className=""
+                            dangerouslySetInnerHTML={{
+                              __html: description.description.replace(
+                                /\n/g,
+                                "<br />"
+                              ),
+                            }}
+                          ></p>
                         </div>
-                        <div className="w-1/2">
+                        {/* <div className="w-1/2">
                           <h1 className="text-base font-bold">
                             Résultat attendu:
                           </h1>
                           <p>{description.resultatAttendu}</p>
-                        </div>
+                        </div> */}
                       </div>
                     ))}
                     <div className="h-full flex mb-4 bg-white flex-col pb-4 ">
                       <div className=" w-full flex">
-                        <div className="w-1/2">
+                        <div className="w-full">
                           <h1 className="text-[20px] font-bold p-4">Action</h1>
                           <div className="mt-2 p-4">
                             <Textarea
+                              className="whitespace-pre-wrap"
                               placeholder="Action"
                               value={actionText}
                               onChange={(e) => setActionText(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                        <div className="w-1/2">
-                          <h1 className="text-[20px] font-bold p-4">
-                            Résultat attendu
-                          </h1>
-                          <div className="mt-2 p-4">
-                            <Textarea
-                              placeholder="Résultat Attendu"
-                              value={expectedResultText}
-                              onChange={(e) =>
-                                setExpectedResultText(e.target.value)
-                              }
+                              onKeyDown={handleKeyDown}
                             />
                           </div>
                         </div>

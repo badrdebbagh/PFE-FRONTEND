@@ -23,6 +23,9 @@ import {
   CREATE_FUNCTIONNALITY_FAILURE,
   CREATE_FUNCTIONNALITY_REQUEST,
   CREATE_FUNCTIONNALITY_SUCCESS,
+  CREATE_SOUS_DOMAINE_FAILURE,
+  CREATE_SOUS_DOMAINE_REQUEST,
+  CREATE_SOUS_DOMAINE_SUCCESS,
   DELETE_USER_FAILURE,
   DELETE_USER_REQUEST,
   DELETE_USER_SUCCESS,
@@ -54,6 +57,9 @@ import {
   GET_TEST_CASE_FAILURE,
   GET_TEST_CASE_REQUEST,
   GET_TEST_CASE_SUCCESS,
+  GET_TEST_RESULT_FAILURE,
+  GET_TEST_RESULT_REQUEST,
+  GET_TEST_RESULT_SUCCESS,
   GET_USER_FAILURE,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
@@ -93,6 +99,7 @@ const initialState = {
     fonctionnalites: [],
     casTests: [],
   },
+  testResults: {},
   testSuccessfull: null,
   testError: null,
 };
@@ -303,39 +310,39 @@ export const authReducer = (state = initialState, action) => {
     case GET_DOMAINE_REQUEST:
       return {
         ...state,
-        loading: true,
+        isLoading: true,
         error: null,
       };
     case GET_DOMAINE_SUCCESS:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         domaines: action.payload,
         error: null,
       };
     case GET_DOMAINE_FAILURE:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         error: action.payload, // Assuming payload contains error information
       };
     case GET_SOUS_DOMAINE_REQUEST:
       return {
         ...state,
-        loading: true,
+        isLoading: true,
         error: null,
       };
     case GET_SOUS_DOMAINE_SUCCESS:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         sous_domaines: action.payload, // Assuming payload contains the array of domaines
         error: null,
       };
     case GET_SOUS_DOMAINE_FAILURE:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         error: action.payload, // Assuming payload contains error information
       };
 
@@ -348,44 +355,44 @@ export const authReducer = (state = initialState, action) => {
       };
 
     case GET_FUNCTIONNALITY_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, isLoading: false, error: action.payload };
 
     case CREATE_FUNCTIONNALITY_REQUEST:
-      return { ...state, loading: true, error: null };
+      return { ...state, isLoading: true, error: null };
     case CREATE_FUNCTIONNALITY_SUCCESS:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         fonctionnalite: [...state.fonctionnalite, action.payload],
         error: null,
       };
     case CREATE_FUNCTIONNALITY_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, isLoading: false, error: action.payload };
 
     case GET_TEST_CASE_REQUEST:
       return {
         ...state,
-        loading: true,
+        isLoading: true,
         error: null,
       };
     case GET_TEST_CASE_SUCCESS:
       console.log("Reducer GET_TEST_CASE_SUCCESS", action.payload);
       return {
-        loading: false,
+        isLoading: false,
         testCases: action.payload,
         success: "fetched cas de test successfull",
       };
     case GET_TEST_CASE_FAILURE:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         error: action.payload,
       };
 
     case ADD_TEST_CASE_DESCRIPTION_REQUEST:
       return {
         ...state,
-        loading: true,
+        isLoading: true,
         error: null,
         success: false,
       };
@@ -393,7 +400,7 @@ export const authReducer = (state = initialState, action) => {
       console.log("action etapes", action.payload);
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         etapes: [...state.etapes, action.payload],
         error: null,
         success: true,
@@ -401,7 +408,7 @@ export const authReducer = (state = initialState, action) => {
     case ADD_TEST_CASE_DESCRIPTION_FAILURE:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         error: action.payload,
         success: false,
       };
@@ -409,13 +416,13 @@ export const authReducer = (state = initialState, action) => {
     case GET_STEPS_REQUEST:
       return {
         ...state,
-        loading: true,
+        isLoading: true,
         error: null,
       };
     case GET_STEPS_SUCCESS:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         etapes: action.payload,
         error: null,
         success: "fetched steps successfully",
@@ -423,14 +430,14 @@ export const authReducer = (state = initialState, action) => {
     case GET_STEPS_FAILURE:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         error: action.payload,
       };
 
     case ASSIGN_PROJECT_REQUEST:
       return {
         ...state,
-        loading: true,
+        isLoading: true,
         error: null,
       };
     case ASSIGN_PROJECT_SUCCESS:
@@ -441,12 +448,12 @@ export const authReducer = (state = initialState, action) => {
             ? { ...project, domaines: action.payload.domaines }
             : project
         ),
-        loading: false,
+        isLoading: false,
       };
     case ASSIGN_PROJECT_FAILURE:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         error: action.payload,
       };
 
@@ -464,45 +471,97 @@ export const authReducer = (state = initialState, action) => {
     case CREATE_CAS_TEST_REQUEST:
       return {
         ...state,
-        loading: true,
+        isLoading: true,
         error: null,
       };
     case CREATE_CAS_TEST_SUCCESS:
       console.log("added cas test", action.payload);
       return {
         ...state,
-        loading: false,
-        testCases: [...state.testCases, action.payload],
+        isLoading: false,
+        fonctionnalite: state.fonctionnalite.map((fonc) =>
+          fonc.id === action.payload.fonctionnalite.id
+            ? {
+                ...fonc,
+                casTests: [...fonc.casTests, action.payload],
+              }
+            : fonc
+        ),
       };
     case CREATE_CAS_TEST_FAILURE:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         error: action.payload,
       };
 
     case FETCH_USER_PROJECTS_REQUEST:
-      return { ...state, loading: true, error: null };
+      return { ...state, isLoading: true, error: null };
     case FETCH_USER_PROJECTS_SUCCESS:
-      return { ...state, loading: false, projectsData: action.payload };
+      return { ...state, isLoading: false, projectsData: action.payload };
     case FETCH_USER_PROJECTS_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, isLoading: false, error: action.payload };
 
     case SUBMIT_TEST_RESULT_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, isLoading: true };
     case SUBMIT_TEST_RESULT_SUCCESS:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         testSuccessfull: "Test Reussi",
         testError: null,
       };
     case SUBMIT_TEST_RESULT_FAILURE:
       return {
         ...state,
-        loading: false,
+        isLoading: false,
         testError: "Test Non Reussi",
         testSuccessfull: null,
+      };
+
+    case GET_TEST_RESULT_REQUEST:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case GET_TEST_RESULT_SUCCESS:
+      const updatedTestResults = action.payload.reduce(
+        (acc, result) => {
+          acc[result.testCaseDescriptionId] = result;
+          return acc;
+        },
+        { ...state.testResults }
+      );
+      return {
+        ...state,
+        isLoading: false,
+        testResults: updatedTestResults,
+      };
+    case GET_TEST_RESULT_FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        testError: action.payload,
+      };
+
+    case CREATE_SOUS_DOMAINE_REQUEST:
+      return {
+        ...state,
+        isLoading: true,
+        error: null,
+      };
+    case CREATE_SOUS_DOMAINE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        sous_domaines: action.payload,
+        error: null,
+      };
+    case CREATE_SOUS_DOMAINE_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
       };
     default:
       return state;

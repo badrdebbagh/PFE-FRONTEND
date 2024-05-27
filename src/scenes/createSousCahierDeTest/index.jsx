@@ -34,6 +34,7 @@ const CreateSousCahierDeTestForm = () => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const domaineId = query.get("domaine");
+  const [selectedSousDomaineId, setSelectedSousDomaineId] = useState(null); // New state for selected sousDomaineId
 
   const dispatch = useDispatch();
   const form = useForm({
@@ -51,7 +52,6 @@ const CreateSousCahierDeTestForm = () => {
   useEffect(() => {
     dispatch(getSousDomaines());
   }, []);
-  const navigate = useNavigate();
 
   useEffect(() => {
     axios

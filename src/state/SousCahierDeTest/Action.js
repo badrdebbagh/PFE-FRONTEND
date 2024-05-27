@@ -30,6 +30,7 @@ export const fetchCahiers = (cahierDeTestGlobalId) => async (dispatch) => {
 };
 export const fetchCahiersByDomain =
   (projectId, domaineId) => async (dispatch) => {
+    console.log("Fetching ", projectId, domaineId);
     dispatch({ type: GET_SOUS_CAHIER_DE_TESTS_REQUEST });
     try {
       const response = await api.get(`/api/cahiers/${projectId}/${domaineId}`);
@@ -93,10 +94,7 @@ export const createSousCahier = (sousCahierData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: CREATE_SOUS_CAHIER_DE_TEST_FAILURE,
-      payload: error.response
-        ? error.response.data
-        : "Unexpected error occurred",
+      payload: error,
     });
-    console.error("Error creating Cahier de Test:", error.response || error);
   }
 };

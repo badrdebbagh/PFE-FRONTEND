@@ -22,6 +22,7 @@ import Projects2 from "../scenes/projects";
 import TeamCopy from "../scenes/team";
 import CahierDetails from "../scenes/souscahierdetestDetails";
 import Test2 from "../scenes/tests2";
+import ProjectsTesteur from "../scenes/projectsTesteur";
 
 const PrivateRouter = ({ children }) => {
   const jwt = localStorage.getItem("jwt");
@@ -44,8 +45,8 @@ const PrivateRouter = ({ children }) => {
             <Route path="/cahierglobal" element={<CahierDeTestGlobal />} />
             <Route path="/affectation" element={<Affectation />} />
             <Route path="/affectation/:userId" element={<UserProjects />} />
-            <Route path="/project/:projectId" element={<ProjectDetails />} />
-            <Route path="/projects/:projectId" element={<CahierDetails />} />
+            {/* <Route path="/project/:projectId" element={<ProjectDetails />} />
+            <Route path="/projects/:projectId" element={<CahierDetails />} /> */}
           </>
         )}
         {userRole === "CHEF_DE_PROJECT" && (
@@ -61,6 +62,9 @@ const PrivateRouter = ({ children }) => {
             <Route path="/project2" element={<Projects />} />
             {/* <Route path="/tests" element={<CahierDeTestGlobal />} /> */}
             <Route path="/tests" element={<Test2 />} />
+
+            <Route path="/projects2" element={<ProjectsTesteur />} />
+            <Route path="/project/:projectId" element={<ProjectDetails />} />
             <Route path="/projects/:projectId" element={<CahierDetails />} />
           </>
         )}

@@ -22,9 +22,15 @@ import {
   CREATE_CAS_TEST_FAILURE,
   CREATE_CAS_TEST_REQUEST,
   CREATE_CAS_TEST_SUCCESS,
+  CREATE_DOMAINE_FAILURE,
+  CREATE_DOMAINE_REQUEST,
+  CREATE_DOMAINE_SUCCESS,
   CREATE_FUNCTIONNALITY_FAILURE,
   CREATE_FUNCTIONNALITY_REQUEST,
   CREATE_FUNCTIONNALITY_SUCCESS,
+  CREATE_SOUS_DOMAINE_FAILURE,
+  CREATE_SOUS_DOMAINE_REQUEST,
+  CREATE_SOUS_DOMAINE_SUCCESS,
   DELETE_USER_FAILURE,
   DELETE_USER_REQUEST,
   EXECUTE_TEST_CASE_SUCCESS,
@@ -55,6 +61,9 @@ import {
   GET_TEST_CASE_FAILURE,
   GET_TEST_CASE_REQUEST,
   GET_TEST_CASE_SUCCESS,
+  GET_TEST_RESULT_FAILURE,
+  GET_TEST_RESULT_REQUEST,
+  GET_TEST_RESULT_SUCCESS,
   GET_USER_FAILURE,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
@@ -73,6 +82,11 @@ import axios from "axios";
 import { API_URL, api } from "../../config/api";
 import { useNavigate } from "react-router-dom";
 import { Api } from "@mui/icons-material";
+import {
+  CREATE_SOUS_CAHIER_DE_TEST_FAILURE,
+  CREATE_SOUS_CAHIER_DE_TEST_REQUEST,
+  CREATE_SOUS_CAHIER_DE_TEST_SUCCESS,
+} from "../SousCahierDeTest/ActionType";
 
 export const loginUser = (reqData) => async (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
@@ -94,7 +108,7 @@ export const loginUser = (reqData) => async (dispatch) => {
   }
 };
 
-export const getProjects = (jwt) => async (dispatch) => {
+export const getProjects = () => async (dispatch) => {
   dispatch({ type: "GET_PROJECT_REQUEST" });
   try {
     const { data } = await api.get("/api/allProjects");
@@ -198,9 +212,10 @@ export const addProject = (projectData) => async (dispatch) => {
     );
 
     dispatch({ type: ADD_PROJECT_SUCCESS, payload: data });
+    return data;
   } catch (error) {
     dispatch({ type: ADD_PROJECT_FAILURE, payload: error });
-    console.log("failed with error", error);
+    throw error;
   }
 };
 export const getUser = () => async (dispatch) => {
@@ -522,6 +537,7 @@ export const getTestCasesByUserId = (userId, projectId) => async (dispatch) => {
     );
 
     dispatch({ type: GET_TEST_CASE_SUCCESS, payload: data });
+    console.log("Getting test cases", data);
   } catch (error) {
     dispatch({ type: GET_TEST_CASE_FAILURE, payload: error });
   }
@@ -571,7 +587,6 @@ export const fetchUserProjects = (userId) => async (dispatch) => {
   try {
     const response = await api.get(`/api/user/${userId}/projects`);
     dispatch({ type: FETCH_USER_PROJECTS_SUCCESS, payload: response.data });
-    console.log("fefef", response.data);
   } catch (error) {
     dispatch({ type: FETCH_USER_PROJECTS_FAILURE, payload: error.message });
   }
@@ -590,12 +605,76 @@ export const submitTestResult = (testResultData) => async (dispatch) => {
       type: SUBMIT_TEST_RESULT_SUCCESS,
       payload: response.data,
     });
-    console.log("TEST RESULT", response.data);
+    console.log("TEST RESULTr32r23r23 ", response.data);
   } catch (error) {
     dispatch({
       type: SUBMIT_TEST_RESULT_FAILURE,
       payload: error.message,
     });
+  }
+};
+
+export const getTestResults =
+  (testCaseDescriptionId, cahierDeTestId) => async (dispatch) => {
+    console.log(
+      "receiveddefeiughdfw3ugqfde",
+      testCaseDescriptionId,
+      cahierDeTestId
+    );
+    dispatch({ type: GET_TEST_RESULT_REQUEST });
+    try {
+      const response = await api.get(`/api/test-results`, {
+        params: { testCaseDescriptionId, cahierDeTestId },
+      });
+      dispatch({
+        type: GET_TEST_RESULT_SUCCESS,
+        payload: response.data,
+      });
+      console.log("received resulsts", response.data);
+    } catch (error) {
+      dispatch({ type: GET_TEST_RESULT_FAILURE, payload: error.message });
+    }
+  };
+
+export const addSousDomaine = (sousDomaineData) => async (dispatch) => {
+  console.log("received sous domaine", sousDomaineData);
+  dispatch({ type: CREATE_SOUS_DOMAINE_REQUEST });
+
+  try {
+    const { data } = await axios.post(
+      `${API_URL}/api/sousDomaines/create`,
+      sousDomaineData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    dispatch({ type: CREATE_SOUS_DOMAINE_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({ type: CREATE_SOUS_DOMAINE_FAILURE, payload: error });
+  }
+};
+
+export const addDomaine = (domaineData) => async (dispatch) => {
+  console.log("received sous domaine", domaineData);
+  dispatch({ type: CREATE_DOMAINE_REQUEST });
+
+  try {
+    const { data } = await axios.post(
+      `${API_URL}/api/domaines/create`,
+      domaineData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    dispatch({ type: CREATE_DOMAINE_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({ type: CREATE_DOMAINE_FAILURE, payload: error });
   }
 };
 export const logout = (navigate) => async (dispatch) => {
