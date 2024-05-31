@@ -27,8 +27,6 @@ const Projects2 = () => {
 
   const projects = useSelector((state) => state.auth.projects);
 
-
-
   useEffect(() => {
     const loadJWT = async () => {
       const token = await localStorage.getItem("jwt");
@@ -39,10 +37,6 @@ const Projects2 = () => {
 
     loadJWT();
   }, [dispatch]);
-
-  const handleAddProject = () => {
-    navigate("/addProject");
-  };
 
   const [selectedDomaines, setSelectedDomaines] = useState({});
 
@@ -79,7 +73,7 @@ const Projects2 = () => {
             value={selectedDomaines[projectId] || ""}
             onValueChange={(value) => handleRoleChange(projectId, value)}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className=" bg-white border text-[#f2762a] font-bold border-[#f2762a] w-full">
               <SelectValue placeholder="Domaines" />
             </SelectTrigger>
             <SelectContent>
@@ -96,15 +90,13 @@ const Projects2 = () => {
   ];
   return (
     <div>
-      <div className="">
+      <div className="px-8">
         <DataTable columns={columns} data={projects} />
       </div>
 
       {/* <div className="flex items-center justify-center mt-6">
-          <Button onClick={handleAddProject} variant="secondary">
-            Assign Project to user
-          </Button>
-        </div> */}
+        <Button variant="secondary">Assign Project to user</Button>
+      </div> */}
     </div>
   );
 };

@@ -65,14 +65,14 @@ const ProjectCard = ({ onSelectDomaine }) => {
   // }
 
   return (
-    <div className="space-y-5 bg-gray-200 h-screen " key={projects.length}>
-      <div className=" w-full flex flex-row  items-center  justify-between  pl-10 shadow-[0_3px_10px_rgb(0,0,0,0.2)] h-[70px]  ">
+    <div className="space-y-5  h-screen mt-4 " key={projects.length}>
+      <div className=" w-full flex flex-row  items-center  justify-between  pl-10  h-[70px]  ">
         <div className="flex gap-4">
           <div>
             {" "}
             <Dialog variant="secondary">
               <DialogTrigger className=" rounded-lg">
-                <Button className=" rounded-md">Creer un domaine</Button>
+                <Button variant="thirdly">Creer un domaine</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>Creer un domaine</DialogHeader>
@@ -84,7 +84,7 @@ const ProjectCard = ({ onSelectDomaine }) => {
             {" "}
             <Dialog variant="secondary ">
               <DialogTrigger className=" rounded-md w-full">
-                <Button className=" rounded-md">Creer un sous domaine</Button>
+                <Button variant="thirdly">Creer un sous domaine</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>Creer un Sous Domaine</DialogHeader>
@@ -94,7 +94,9 @@ const ProjectCard = ({ onSelectDomaine }) => {
           </div>
         </div>
         <div className=" flex items-center justify-center mr-6">
-          <Button onClick={handleAddUser}>Ajouter un projet</Button>
+          <Button variant="thirdly" onClick={handleAddUser}>
+            Ajouter un projet
+          </Button>
         </div>
       </div>
       <div className="flex items-center justify-center flex-col space-y-5">
@@ -111,7 +113,7 @@ const ProjectCard = ({ onSelectDomaine }) => {
           return (
             <Card
               key={project.id}
-              className="ml-2 p-5 w-[1000px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] "
+              className="ml-2 p-5 w-[1000px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] border border-[#f2762a] "
             >
               <div className="space-y-2">
                 <div className="flex justify-between">
@@ -132,19 +134,19 @@ const ProjectCard = ({ onSelectDomaine }) => {
                         {project.chefDeProjet ? project.chefDeProjet : "anas"}
                       </span>
                     </p>
-                    <div className="bg-gray-200 p-2 rounded-md">
+                    {/* <div className="bg-gray-200 p-2 rounded-md">
                       <p className=" text-lg">
                         {" "}
                         Status :{" "}
                         <span className="font-bold">{project.status}</span>
                       </p>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="flex gap-4 ">
                     <div className="">
                       <Dialog variant="secondary">
                         <DialogTrigger className=" rounded-md">
-                          <Button className=" rounded-md">
+                          <Button variant="thirdly">
                             Attribuer un domaine
                           </Button>
                         </DialogTrigger>
@@ -163,7 +165,7 @@ const ProjectCard = ({ onSelectDomaine }) => {
                           handleSelectDomaine(value, project.id)
                         }
                       >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className=" bg-white border text-[#f2762a] font-bold border-[#f2762a] w-full">
                           <SelectValue placeholder="Domaine" />
                         </SelectTrigger>
                         <SelectContent>

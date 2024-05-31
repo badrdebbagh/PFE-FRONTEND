@@ -1,203 +1,132 @@
-import { useState } from "react";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "react-pro-sidebar/dist/css/styles.css";
-import { tokens } from "../../theme";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import { LOGOUT } from "../../state/authentication/ActionType";
-import { logout } from "../../state/authentication/Action";
-import { useDispatch, useSelector } from "react-redux";
-import { useUser } from "../../contexts/UserProvider";
+import {
+  HomeIcon,
+  UsersIcon,
+  DocumentIcon,
+  Bars3Icon as MenuIcon,
+} from "@heroicons/react/24/outline";
 import { jwtDecode } from "jwt-decode";
+import { Button } from "../../componentsShadn/ui/button";
+import { useDispatch } from "react-redux";
+import { logout } from "../../state/authentication/Action";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
+const SidebarItem = ({ title, to, icon: Icon, selected, setSelected }) => {
+  const isSelected = selected === title;
   return (
-    <MenuItem
-      active={selected === title}
-      style={{
-        color: colors.grey[100],
-      }}
+    <Link
+      to={to}
+      className={`flex items-center p-3 my-1 rounded-md transition-colors duration-200 ${
+        isSelected
+          ? "bg-orange-500 text-white"
+          : "bg-transparent text-orange-500 hover:bg-orange-100"
+      }`}
       onClick={() => setSelected(title)}
-      icon={icon}
     >
-      <Typography>{title}</Typography>
-      <Link to={to} />
-    </MenuItem>
+      <Icon className="h-5 w-5 mr-3" />
+      <span>{title}</span>
+    </Link>
   );
 };
 
 const Sidebar = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const jwt = localStorage.getItem("jwt");
-  const decoded = jwtDecode(jwt); // Assuming JWT is in action.payload.jwt
+  const decoded = jwtDecode(jwt);
   const userRole = decoded.authorities;
-
+  const handleLogout = () => {
+    dispatch(logout(navigate));
+  };
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
-        },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
-        },
-        "& .pro-menu-item.active": {
-          color: "#6870fa !important",
-        },
-      }}
-    >
-      <ProSidebar collapsed={isCollapsed}>
-        <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
-          <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-              color: colors.grey[100],
-            }}
-          >
-            {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  ADMINISTRATEUR
-                </Typography>
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuOutlinedIcon />
-                </IconButton>
-              </Box>
-            )}
-          </MenuItem>
-
-          {!isCollapsed && (
-            <Box mb="25px">
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={`../../assets/logo.png`}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
-              </Box>
-              <Box textAlign="center">
-                <Typography
-                  variant="h2"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  {decoded.firstName}
-                </Typography>
-              </Box>
-            </Box>
-          )}
-
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            {userRole === "ADMIN" && (
-              <>
-                <Item
-                  title="Dashboard"
-                  to="/"
-                  icon={<HomeOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-
-                <Item
-                  title="Gestion des utilisateurs"
-                  to="/team"
-                  icon={<PeopleOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Projects"
-                  to="/projects"
-                  icon={<HomeOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              </>
-            )}
-            {userRole === "CHEF_DE_PROJECT" && (
-              <>
-                <Item
-                  title="Affectation"
-                  to="/affectation"
-                  icon={<HomeOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-
-                <Item
-                  title="Projects"
-                  to="/projects"
-                  icon={<HomeOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              </>
-            )}
-            {userRole === "USER" && (
-              <>
-                <Item
-                  title="Projects"
-                  to="/projects"
-                  icon={<HomeOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Tests"
-                  to="/tests"
-                  icon={<HomeOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Projects saisie"
-                  to="/projects2"
-                  icon={<HomeOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              </>
-            )}
-          </Box>
-        </Menu>
-      </ProSidebar>
-    </Box>
+    <div className="h-screen bg-white shadow-lg flex flex-col transition w-[300px]">
+      <div className="flex items-center justify-center p-4 border-b">
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="p-2 rounded-md bg-[#f2762a] "
+        >
+          <MenuIcon className="h-6 w-6" />
+        </button>
+      </div>
+      <div className={`flex-1 p-4 ${isCollapsed ? "hidden" : "block"} `}>
+        {userRole === "ADMIN" && (
+          <>
+            <SidebarItem
+              title="Dashboard"
+              to="/"
+              icon={HomeIcon}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <SidebarItem
+              title="Gestion des utilisateurs"
+              to="/team"
+              icon={UsersIcon}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <SidebarItem
+              title="Projects"
+              to="/projects"
+              icon={DocumentIcon}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          </>
+        )}
+        {userRole === "CHEF_DE_PROJECT" && (
+          <>
+            <SidebarItem
+              title="Affectation"
+              to="/affectation"
+              icon={HomeIcon}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <SidebarItem
+              title="Projects"
+              to="/projects"
+              icon={DocumentIcon}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          </>
+        )}
+        {userRole === "USER" && (
+          <>
+            <SidebarItem
+              title="Projects"
+              to="/projects"
+              icon={DocumentIcon}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <SidebarItem
+              title="Tests"
+              to="/tests"
+              icon={DocumentIcon}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <SidebarItem
+              title="Projects saisie"
+              to="/projects2"
+              icon={DocumentIcon}
+              selected={selected}
+              setSelected={setSelected}
+            />
+          </>
+        )}
+        <div className="  h-1/2  flex items-center justify-center">
+          <Button onClick={handleLogout} variant="thirdly">
+            Se Deconnecter
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

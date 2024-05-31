@@ -136,6 +136,7 @@ const CreateSousCahierDeTestForm = () => {
               <FormItem>
                 <FormControl className=" w-full">
                   <Select
+                  defaultValue={field.value}
                     value={field.value}
                     onValueChange={(value) => {
                       field.onChange(value);

@@ -28,7 +28,10 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1>Admin Dashboard</h1>
+      <div className="ml-6">
+        <h1 className="text-2xl"> Dashboard</h1>
+      </div>
+
       {loading ? (
         <p>Loading...</p>
       ) : error ? (

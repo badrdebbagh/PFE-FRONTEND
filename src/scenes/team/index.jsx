@@ -80,7 +80,7 @@ const Team = () => {
                 }
               }}
               className=" w-[100px]"
-              variant="secondary"
+              variant="thirdly"
             >
               {isSuspended ? "Activer" : "Suspendre"}
             </Button>
@@ -99,7 +99,7 @@ const Team = () => {
         <DataTable columns={columns} data={user} />
       </div>
       <div className=" flex items-center justify-center mt-6">
-        <Button onClick={handleAddUser} variant="secondary">
+        <Button onClick={handleAddUser} variant="thirdly">
           Ajouter Utilisateur
         </Button>
       </div>

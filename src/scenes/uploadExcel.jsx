@@ -33,7 +33,7 @@ const UploadExcel = ({ projectId, selectedDomaine }) => {
           },
         }
       );
-      // Refresh or notify success
+
       alert("File uploaded successfully");
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -43,11 +43,7 @@ const UploadExcel = ({ projectId, selectedDomaine }) => {
 
   return (
     <div className="flex items-center justify-center mt-4 flex-col">
-      {/* <Input
-        className="bg-gray-100 hover:bg-red-500"
-        type="file"
-        onChange={handleFileChange}
-      />
+      {/* <Input className="bg-gray-100" type="file" onChange={handleFileChange} />
       <Button onClick={handleFileUpload}>Upload Excel</Button> */}
       <Card>
         <CardHeader>
@@ -60,6 +56,7 @@ const UploadExcel = ({ projectId, selectedDomaine }) => {
               className="file:bg-gray-200 file:shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] file:px-4 file:rounded-xl file:mr-4 file:hover:bg-slate-900 file:ease-in file:transition file:hover:text-white "
               id="file"
               type="file"
+              onChange={handleFileChange}
             />
           </div>
           <Button className="" onClick={handleFileUpload}>

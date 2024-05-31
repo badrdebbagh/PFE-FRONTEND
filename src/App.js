@@ -24,6 +24,7 @@ import Project from "./scenes/projectForm";
 import PrivateRouter from "./components/PrivateRouter";
 import { Toaster } from "./componentsShadn/ui/toaster";
 import { LOGIN_SUCCESS } from "./state/authentication/ActionType";
+import MainLayout from "./components/MainLayout";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -41,11 +42,17 @@ function App() {
         <CssBaseline />
         <Toaster />
         <Routes>
-          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
-
-          {/* Private (Authenticated) Routes */}
-          <Route path="*" element={<PrivateRouter />} />
+          <Route
+            path="*"
+            element={
+              <MainLayout>
+                <Routes>
+                  <Route path="*" element={<PrivateRouter />} />
+                </Routes>
+              </MainLayout>
+            }
+          />
         </Routes>
       </ThemeProvider>
     </ColorModeContext.Provider>

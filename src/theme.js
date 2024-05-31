@@ -6,7 +6,7 @@ export const tokens = (mode) => ({
   ...(mode === "dark"
     ? {
         orange: {
-          100: "#E8751A",
+          100: "#f2762a",
         },
         grey: {
           100: "#e0e0e0",
@@ -62,6 +62,10 @@ export const tokens = (mode) => ({
           700: "#3e4396",
           800: "#2a2d64",
           900: "#151632",
+        },
+        white: {
+          100: "#FFFFFF",
+          200: "#FEECE2",
         },
       }
     : {
@@ -144,7 +148,7 @@ export const themeSettings = (mode) => {
               light: colors.grey[100],
             },
             background: {
-              default: colors.primary[500],
+              default: colors.white[100],
             },
           }
         : {

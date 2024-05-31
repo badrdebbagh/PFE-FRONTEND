@@ -11,10 +11,14 @@ import Select from "@mui/material/Select";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getRoles } from "../../state/authentication/Action";
+import { useToast } from "../../componentsShadn/ui/use-toast";
 
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const roles = useSelector((store) => store.auth.roles);
+  const roles = useSelector((store) => store.auth.roles).filter(
+    (role) => role !== "ADMIN"
+  );
+  const { toast } = useToast();
   const dispatch = useDispatch();
 
   const handleFetchRoles = () => {
@@ -29,12 +33,19 @@ const Form = () => {
 
       const endpoint = "http://localhost:8080/api/createUser";
       const response = await axios.post(endpoint, values);
-      resetForm();
+
       console.log("User created successfully:", response.data);
+      toast({
+        description: "Utilisateur Ajouté avec succès",
+      });
+
+      // Reset the form fields
+      resetForm();
     } catch (error) {
       console.error("Failed to create user:", error);
     }
   };
+
   return (
     <Box m="20px">
       <Header title="CREATE USER" subtitle="Create a New User Profile" />
@@ -170,7 +181,7 @@ const checkoutSchema = yup.object().shape({
   role: yup
     .string()
     .required("Role is required")
-    .oneOf(["USER", "ADMIN" ,"CHEF_DE_PROJECT"], "Invalid role"),
+    .oneOf(["USER", "ADMIN", "CHEF_DE_PROJECT"], "Invalid role"),
 
   // contact: yup
   //   .string()

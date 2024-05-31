@@ -118,7 +118,9 @@ const UserProjectsCopy = () => {
         <DataTable columns={columns} data={projects} />
       </div>
       <div>
-        <Button onClick={handleAssignProject}>Assign</Button>
+        <Button variant="secondary" onClick={handleAssignProject}>
+          Assign
+        </Button>
       </div>
     </div>
   );

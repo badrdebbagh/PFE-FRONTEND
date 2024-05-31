@@ -5,6 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
   getFilteredRowModel,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -17,6 +18,7 @@ import {
 } from "../../componentsShadn/ui/table";
 import { useEffect, useState } from "react";
 import { Input } from "../../componentsShadn/ui/input";
+import { Button } from "../../componentsShadn/ui/button";
 
 function DataTable({ columns, data }) {
   const [rowSelection, setRowSelection] = useState({});
@@ -29,6 +31,7 @@ function DataTable({ columns, data }) {
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       columnFilters,
       rowSelection,
@@ -46,7 +49,7 @@ function DataTable({ columns, data }) {
           onChange={(event) =>
             table.getColumn("projectName")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm border border-[#f2762a]"
         />
       </div>
       <div className="rounded-md border">
@@ -55,7 +58,10 @@ function DataTable({ columns, data }) {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    className="bg-[#f2762a] text-white"
+                    key={header.id}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -67,7 +73,7 @@ function DataTable({ columns, data }) {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="bg-white">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -75,7 +81,7 @@ function DataTable({ columns, data }) {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell className="text-black" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -88,14 +94,30 @@ function DataTable({ columns, data }) {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-black"
                 >
-                  No results.
+                  Pas de résultats
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className=" flex justify-end gap-4 mt-4">
+        <Button
+          variant="secondary"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Page précedente
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Page suivante
+        </Button>
       </div>
     </div>
   );

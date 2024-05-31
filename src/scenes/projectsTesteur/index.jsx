@@ -89,7 +89,10 @@ const ProjectsTesteur = ({ onSelectDomaine }) => {
           };
 
           return (
-            <Card key={project.projectId} className="ml-2 p-5 w-[1000px]">
+            <Card
+              key={project.projectId}
+              className="ml-2 p-5 w-[1000px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] border border-[#f2762a]"
+            >
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <div className="flex items-center gap-5 ">
@@ -118,7 +121,7 @@ const ProjectsTesteur = ({ onSelectDomaine }) => {
                           handleSelectDomaine(value, project.projectId)
                         }
                       >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className=" bg-white border text-[#f2762a] font-bold border-[#f2762a] w-full">
                           <SelectValue placeholder="Domaine" />
                         </SelectTrigger>
                         <SelectContent>

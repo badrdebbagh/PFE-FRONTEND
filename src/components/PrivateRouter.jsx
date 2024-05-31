@@ -32,44 +32,42 @@ const PrivateRouter = ({ children }) => {
   const userRole = decoded.authorities;
 
   return isAuthenticated ? (
-    <MainLayout>
-      <Routes>
-        {userRole === "ADMIN" && (
-          <>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/form" element={<Form />} />
-            <Route path="/addproject" element={<ProjectForm />} />
-            <Route path="/projects" element={<ProjectCard />} />
-            <Route path="/projecttest" element={<ProjectCard />} />
-            <Route path="/cahierglobal" element={<CahierDeTestGlobal />} />
-            <Route path="/affectation" element={<Affectation />} />
-            <Route path="/affectation/:userId" element={<UserProjects />} />
-            {/* <Route path="/project/:projectId" element={<ProjectDetails />} />
+    <Routes>
+      {userRole === "ADMIN" && (
+        <>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/form" element={<Form />} />
+          <Route path="/addproject" element={<ProjectForm />} />
+          <Route path="/projects" element={<ProjectCard />} />
+          <Route path="/projecttest" element={<ProjectCard />} />
+          <Route path="/cahierglobal" element={<CahierDeTestGlobal />} />
+          <Route path="/affectation" element={<Affectation />} />
+          <Route path="/affectation/:userId" element={<UserProjects />} />
+          {/* <Route path="/project/:projectId" element={<ProjectDetails />} />
             <Route path="/projects/:projectId" element={<CahierDetails />} /> */}
-          </>
-        )}
-        {userRole === "CHEF_DE_PROJECT" && (
-          <>
-            <Route path="/affectation" element={<Affectation />} />
-            <Route path="/affectation/:userId" element={<UserProjectsCopy />} />
-            <Route path="/projects" element={<Projects />} />
-          </>
-        )}
-        {userRole === "USER" && (
-          <>
-            <Route path="/projects" element={<Projects2 />} />
-            <Route path="/project2" element={<Projects />} />
-            {/* <Route path="/tests" element={<CahierDeTestGlobal />} /> */}
-            <Route path="/tests" element={<Test2 />} />
+        </>
+      )}
+      {userRole === "CHEF_DE_PROJECT" && (
+        <>
+          <Route path="/affectation" element={<Affectation />} />
+          <Route path="/affectation/:userId" element={<UserProjectsCopy />} />
+          <Route path="/projects" element={<Projects />} />
+        </>
+      )}
+      {userRole === "USER" && (
+        <>
+          <Route path="/projects" element={<Projects2 />} />
+          <Route path="/project2" element={<Projects />} />
+          {/* <Route path="/tests" element={<CahierDeTestGlobal />} /> */}
+          <Route path="/tests" element={<Test2 />} />
 
-            <Route path="/projects2" element={<ProjectsTesteur />} />
-            <Route path="/project/:projectId" element={<ProjectDetails />} />
-            <Route path="/projects/:projectId" element={<CahierDetails />} />
-          </>
-        )}
-      </Routes>
-    </MainLayout>
+          <Route path="/projects2" element={<ProjectsTesteur />} />
+          <Route path="/project/:projectId" element={<ProjectDetails />} />
+          <Route path="/projects/:projectId" element={<CahierDetails />} />
+        </>
+      )}
+    </Routes>
   ) : (
     <Navigate to="/login" replace />
   );

@@ -59,6 +59,7 @@ const ProjectForm = () => {
   const form = useForm({
     defaultValues: {
       description: "",
+      role: "",
     },
   });
 
@@ -111,11 +112,11 @@ const ProjectForm = () => {
   }
 
   return (
-    <div className=" flex flex-col justify-center items-center  ">
-      <div>
-        <Header title="Projets" />
+    <div className=" flex flex-col justify-center items-center mt-6 ">
+      <div className="mb-4">
+        <h1 className="text-2xl text-[#f2762a] font-bold">Projets</h1>
       </div>
-      <Card className="w-[1000px] border-none mx-auto ">
+      <Card className="w-[1000px] border-[#f2762a] border mx-auto ">
         <CardHeader>
           <CardTitle className="">Creer un projet</CardTitle>
         </CardHeader>
@@ -124,7 +125,7 @@ const ProjectForm = () => {
             <form>
               <div className="grid w-full items-center gap-4">
                 <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">Nom du projet</Label>
                   <Input
                     id="name"
                     placeholder="Nom du projet"
@@ -133,10 +134,10 @@ const ProjectForm = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">Description du projet</Label>
                   <Textarea
                     id="description"
-                    placeholder="Type your message here."
+                    placeholder="Decrire le projet ici"
                     value={projectDescription}
                     onChange={(e) => setProjectDescription(e.target.value)}
                   />

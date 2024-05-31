@@ -51,11 +51,7 @@ const Affectation = () => {
       headerName: "Email",
       flex: 1,
     },
-    {
-      field: "role",
-      headerName: "Role",
-      flex: 1,
-    },
+
     {
       field: "suspended",
       headerName: "État",

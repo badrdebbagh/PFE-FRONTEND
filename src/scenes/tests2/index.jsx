@@ -300,12 +300,12 @@ const Test2 = () => {
     <div className=" bg-white h-screen ">
       <div className="h-full">
         {/* confirmer div */}
-        <div className="bg-gray-100 ">
+        <div className="bg-white ">
           <div className="flex items-center justify-center p-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
             <div>
               <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                 <PopoverTrigger asChild>
-                  <Button className="bg-slate-700">Choisir </Button>
+                  <Button variant="thirdly">Choisir </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-80">
                   <div className="grid gap-4">
@@ -392,7 +392,9 @@ const Test2 = () => {
                       </div>
                     </div>
                     <div className="flex justify-end items-center">
-                      <Button onClick={handleConfirm}>Confirmer</Button>
+                      <Button variant="thirdly" onClick={handleConfirm}>
+                        Confirmer
+                      </Button>
                     </div>
                   </div>
                 </PopoverContent>
@@ -418,10 +420,10 @@ const Test2 = () => {
                     </h3>
                   </div>
 
-                  <h4 className="text-3xl font-semibold mt-4 mb-2">
-                    Test Cases
+                  <h4 className="text-3xl  mt-4 mb-2 text-[#f2762a] font-bold">
+                    Cas de tests :
                   </h4>
-                  <ul className="list-disc list-inside ">
+                  <ul className="list-disc list-inside flex flex-col gap-4">
                     {fonctionnalite.casTests?.length > 0 ? (
                       fonctionnalite.casTests.map((test) => (
                         <li key={test.id} className="mb-2 list-none">
@@ -440,7 +442,7 @@ const Test2 = () => {
                               test.testCaseDescriptions.map((desc) => (
                                 <div
                                   key={desc.id}
-                                  className="text-black flex border border-amber-700 rounded-lg mb-2 py-6 px-4 justify-between  "
+                                  className="text-black flex border border-[#f2762a] rounded-lg mb-2 py-6 px-4 justify-between   "
                                 >
                                   <div className="flex w-1/2 border-6 ">
                                     <div className="w-full h-full   ">
@@ -459,26 +461,26 @@ const Test2 = () => {
                                           Test Reussi
                                         </div>
                                       ) : (
-                                        <div className=" text-xl font-bold  ">
+                                        <div className=" text-xl font-bold w-full ">
                                           <div className="flex gap-6 items-center  ">
                                             <h1 className="text-2xl text-gray-400">
                                               Status :
                                             </h1>
-                                            <span className="text-red-900">
+                                            <span className="z">
                                               {" "}
                                               Test Non Reussi.
                                             </span>
                                           </div>
 
                                           {testResults[desc.id].comment && (
-                                            <div className="mt-2  p-2 w-full overflow-hidden  ">
+                                            <div className="mt-2 flex justify-items items-center gap-4  p-2  overflow-hidden   ">
                                               <h1 className="text-slate-500 underline">
                                                 Commentaire:
                                               </h1>
-                                              <div className=" overflow-auto h-full bg-white/45 rounded-xl p-4 mt-4">
+                                              <div className=" overflow-auto h-full bg-white/45 rounded-xl p-4 mt-4 w-full">
                                                 <p
                                                   placeholder="Commentaire"
-                                                  className="break-words"
+                                                  className="break-words text-sm"
                                                 >
                                                   {" "}
                                                   {testResults[desc.id].comment}
@@ -538,14 +540,16 @@ const Test2 = () => {
                               ))
                             ) : (
                               <li className="text-gray-500">
-                                No steps available
+                                Pas d'étapes disponible pour ce cas de test
                               </li>
                             )}
                           </ul>
                         </li>
                       ))
                     ) : (
-                      <li className="text-gray-500">No test cases</li>
+                      <li className="text-gray-500">
+                        Aucun cas de test disponible
+                      </li>
                     )}
                   </ul>
                 </div>
