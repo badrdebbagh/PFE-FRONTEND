@@ -7,11 +7,6 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
 const Affectation = () => {
-  const data = [
-    { status: "pending", email: "user1@example.com", amount: 100 },
-    { status: "processing", email: "user2@example.com", amount: 200 },
-    // Add more sample data as needed
-  ];
   const navigate = useNavigate(); // Get navigate function for navigation
 
   const handleRowClick = (params) => {

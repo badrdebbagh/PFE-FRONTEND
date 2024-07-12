@@ -32,6 +32,8 @@ import {
   CardHeader,
   CardTitle,
 } from "../../componentsShadn/ui/card";
+import TestPlanManager from "../../components/TestPlanManager";
+import TestPlanComponent from "../../components/TestPlanManagement";
 
 const Test2 = () => {
   // return (
@@ -466,7 +468,7 @@ const Test2 = () => {
                                             <h1 className="text-2xl text-gray-400">
                                               Status :
                                             </h1>
-                                            <span className="z">
+                                            <span className="text-red-700">
                                               {" "}
                                               Test Non Reussi.
                                             </span>
@@ -498,7 +500,7 @@ const Test2 = () => {
                                               {" "}
                                               <Textarea
                                                 className="whitespace-pre-wrap"
-                                                placeholder="Enter comment"
+                                                placeholder="Commentaire"
                                                 value={commentText}
                                                 onChange={(e) =>
                                                   setCommentText(e.target.value)
@@ -510,8 +512,9 @@ const Test2 = () => {
                                                 onClick={() =>
                                                   handleCommentSubmit(desc.id)
                                                 }
+                                                variant="thirdly"
                                               >
-                                                Submit Comment
+                                                Confirmer
                                               </Button>
                                             </div>
                                           </div>
@@ -581,6 +584,9 @@ const Test2 = () => {
             )}
           </div>
         )}
+      </div>
+      <div>
+        <TestPlanComponent />
       </div>
     </div>
   );

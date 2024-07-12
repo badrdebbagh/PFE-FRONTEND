@@ -46,13 +46,13 @@ const Login = () => {
 
   return (
     <div className="flex items-center h-full bg-white flex-col justify-center ">
-      <div className="relative bottom-[100px]">
+      {/* <div className="relative bottom-[100px] w-[150px] bg-red-900 h-[100px]">
         <img
-          className=" rounded w-[200px]"
+          className=" rounded w-[200px] h-full"
           src="../../assets/bcp_tech_maroc_logo.jpeg  "
           // sx={{ boxShadow: 3 }}
         />
-      </div>
+      </div> */}
       <div className="bg-white px-10 py-20 rounded-3xl border-2 border-gray-100 w-[700px] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]  ">
         <div className="flex flex-col justify-center items-center">
           <h1 className="text-5xl font-semibold  text-orange-600">Bienvenue</h1>

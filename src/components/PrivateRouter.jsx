@@ -23,11 +23,15 @@ import TeamCopy from "../scenes/team";
 import CahierDetails from "../scenes/souscahierdetestDetails";
 import Test2 from "../scenes/tests2";
 import ProjectsTesteur from "../scenes/projectsTesteur";
+import NewForm from "../scenes/userForm";
+import Affectation2 from "../scenes/Affectation/index2";
+import Dashboard2 from "../scenes/dashboard2";
 
 const PrivateRouter = ({ children }) => {
   const jwt = localStorage.getItem("jwt");
   const isAuthenticated = Boolean(jwt); // Simple check. Adjust according to your auth logic.
   const decoded = jwtDecode(jwt); // Assuming JWT is in action.payload.jwt
+  console.log(decoded);
 
   const userRole = decoded.authorities;
 
@@ -35,9 +39,10 @@ const PrivateRouter = ({ children }) => {
     <Routes>
       {userRole === "ADMIN" && (
         <>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard2 />} />
           <Route path="/team" element={<Team />} />
-          <Route path="/form" element={<Form />} />
+          <Route path="/form" element={<NewForm />} />
+          <Route path="/form2" element={<Form />} />
           <Route path="/addproject" element={<ProjectForm />} />
           <Route path="/projects" element={<ProjectCard />} />
           <Route path="/projecttest" element={<ProjectCard />} />
@@ -50,19 +55,20 @@ const PrivateRouter = ({ children }) => {
       )}
       {userRole === "CHEF_DE_PROJECT" && (
         <>
-          <Route path="/affectation" element={<Affectation />} />
+          {/* <Route path="/affectation" element={<Affectation />} /> */}
+          <Route path="/affectation" element={<Affectation2 />} />
           <Route path="/affectation/:userId" element={<UserProjectsCopy />} />
           <Route path="/projects" element={<Projects />} />
         </>
       )}
       {userRole === "USER" && (
         <>
-          <Route path="/projects" element={<Projects2 />} />
-          <Route path="/project2" element={<Projects />} />
+          <Route path="/projects2" element={<Projects2 />} />
+          <Route path="/project23" element={<Projects />} />
           {/* <Route path="/tests" element={<CahierDeTestGlobal />} /> */}
           <Route path="/tests" element={<Test2 />} />
 
-          <Route path="/projects2" element={<ProjectsTesteur />} />
+          <Route path="/saisieProjets" element={<ProjectsTesteur />} />
           <Route path="/project/:projectId" element={<ProjectDetails />} />
           <Route path="/projects/:projectId" element={<CahierDetails />} />
         </>

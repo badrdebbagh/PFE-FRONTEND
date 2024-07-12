@@ -152,7 +152,7 @@ const ProjectCard = ({ onSelectDomaine }) => {
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            Creer nouveaux sous cahier de test
+                            Attribuer un domaine au projet
                           </DialogHeader>
                           <AttribuerDomaine projectId={project.id} />
                         </DialogContent>

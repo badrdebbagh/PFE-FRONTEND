@@ -5,6 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
   getFilteredRowModel,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -15,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../componentsShadn/ui/table";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "../../componentsShadn/ui/input";
 import { Button } from "../../componentsShadn/ui/button";
 
@@ -30,6 +31,7 @@ function DataTable({ columns, data }) {
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       columnFilters,
       rowSelection,
@@ -42,10 +44,10 @@ function DataTable({ columns, data }) {
     <div>
       <div className="flex items-center py-4 px-12 ">
         <Input
-          placeholder="Recherche un projet"
-          value={table.getColumn("projectName")?.getFilterValue() || ""}
+          placeholder="Recherche un utilisateur"
+          value={table.getColumn("firstName")?.getFilterValue() || ""}
           onChange={(event) =>
-            table.getColumn("projectName")?.setFilterValue(event.target.value)
+            table.getColumn("firstName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm border border-[#f2762a]"
         />
@@ -57,8 +59,8 @@ function DataTable({ columns, data }) {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead
-                    key={header.id}
                     className="bg-[#f2762a] text-white"
+                    key={header.id}
                   >
                     {header.isPlaceholder
                       ? null
@@ -94,7 +96,7 @@ function DataTable({ columns, data }) {
                   colSpan={columns.length}
                   className="h-24 text-center text-black"
                 >
-                  Pas de results.
+                  Pas de résultats
                 </TableCell>
               </TableRow>
             )}

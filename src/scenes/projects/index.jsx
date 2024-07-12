@@ -50,42 +50,12 @@ const Projects2 = () => {
 
   const columns = [
     {
-      accessorKey: "projectId",
-      header: "ID",
-    },
-    {
       accessorKey: "projectName",
       header: "Nom du projet",
     },
     {
       accessorKey: "description",
       header: "Description",
-    },
-    {
-      id: "domaines",
-      accessorKey: "domaines",
-      header: "Domaines",
-      cell: ({ row }) => {
-        const projectId = row.original.projectId;
-
-        return (
-          <Select
-            value={selectedDomaines[projectId] || ""}
-            onValueChange={(value) => handleRoleChange(projectId, value)}
-          >
-            <SelectTrigger className=" bg-white border text-[#f2762a] font-bold border-[#f2762a] w-full">
-              <SelectValue placeholder="Domaines" />
-            </SelectTrigger>
-            <SelectContent>
-              {row.original.domaines.map((domaine) => (
-                <SelectItem key={domaine.id} value={domaine.id}>
-                  {domaine.nom}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        );
-      },
     },
   ];
   return (

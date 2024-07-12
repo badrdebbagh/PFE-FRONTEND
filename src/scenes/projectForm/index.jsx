@@ -1,7 +1,6 @@
 import {
   Box,
   Fade,
-  FormControl,
   FormLabel,
   InputLabel,
   Menu,
@@ -39,6 +38,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "../../componentsShadn/ui/use-toast";
 import {
   Form,
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
@@ -75,6 +75,7 @@ const ProjectForm = () => {
 
     try {
       await dispatch(addProject(projectData));
+      // form.reset();
       toast({
         description: "Projet Ajouté avec succés",
       });
@@ -118,7 +119,7 @@ const ProjectForm = () => {
       </div>
       <Card className="w-[1000px] border-[#f2762a] border mx-auto ">
         <CardHeader>
-          <CardTitle className="">Creer un projet</CardTitle>
+          <CardTitle className="">Créer un projet</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -150,15 +151,12 @@ const ProjectForm = () => {
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl className="w-full">
-                          <Label className="mb-2" htmlFor="description">
-                            Chef de projet
-                          </Label>
                           <Select
                             value={field.value}
                             onValueChange={handleSelectChange}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Selectionner chef de projet" />
+                              <SelectValue placeholder="Chef de projet 2" />
                             </SelectTrigger>
 
                             <SelectContent>
@@ -180,7 +178,7 @@ const ProjectForm = () => {
           </Form>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline">Cancel</Button>
+          <Button variant="outline">Abandonner</Button>
           <Button onClick={handleAddProject} variant="outline">
             Ajouter
           </Button>

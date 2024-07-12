@@ -26,6 +26,11 @@ const Form = () => {
       dispatch(getRoles());
     }
   };
+  const roleDisplayNames = {
+    USER: "Testeur",
+    ADMIN: "Admin",
+    CHEF_DE_PROJECT: "Chef de Projet",
+  };
 
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
@@ -39,7 +44,6 @@ const Form = () => {
         description: "Utilisateur Ajouté avec succès",
       });
 
-      // Reset the form fields
       resetForm();
     } catch (error) {
       console.error("Failed to create user:", error);
@@ -121,25 +125,25 @@ const Form = () => {
               >
                 <InputLabel id="demo-simple-select-label">Role</InputLabel>
 
-                <Select
-                  labelId="role-select-label"
-                  id="role-select"
-                  name="role"
-                  value={values.role}
-                  onChange={handleChange}
-                  onOpen={handleFetchRoles}
-                  label="Role"
-                >
-                  {roles.length > 0 ? (
-                    roles.map((role) => (
-                      <MenuItem key={role} value={role}>
-                        {role}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem disabled>Loading...</MenuItem>
-                  )}
-                </Select>
+               <Select
+    labelId="role-select-label"
+    id="role-select"
+    name="role"
+    value={values.role}
+    onChange={handleChange}
+    onOpen={handleFetchRoles}
+    label="Role"
+  >
+    {roles.length > 0 ? (
+      roles.map((role) => (
+        <MenuItem key={role} value={role}>
+          {roleDisplayNames[role]}
+        </MenuItem>
+      ))
+    ) : (
+      <MenuItem disabled>Loading...</MenuItem>
+    )}
+  </Select>
               </FormControl>
               <TextField
                 fullWidth

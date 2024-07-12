@@ -148,6 +148,8 @@ const CahierDetails = () => {
   const [actionText, setActionText] = useState("");
   const [expectedResultText, setExpectedResultText] = useState("");
   const [descriptions, setDescriptions] = useState([]);
+  const [showAddStep, setShowAddStep] = useState(true);
+
   const handleConfirm = () => {
     if (!testCaseId) return;
 
@@ -164,6 +166,7 @@ const CahierDetails = () => {
     dispatch(addTestCaseDescription(testCaseId, descriptionData));
     setActionText("");
     setExpectedResultText("");
+    setShowAddStep(false);
   };
 
   const handleKeyDown = (e) => {
@@ -179,7 +182,7 @@ const CahierDetails = () => {
   };
 
   return (
-    <div className=" pt-4 bg-white h-screen  ">
+    <div className=" pt-4 bg-white h-screen border-t-2  ">
       <div className=" flex flex-row h-[100vh] pt-4 ">
         <div className=" w-1/3  border-r-2 border-inherit ">
           {" "}
@@ -189,12 +192,11 @@ const CahierDetails = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      variant="secondary"
-                      className="rounded-md text-sm "
+                      variant="thirdly"
                       onClick={() => setOpenFonctionnaliteDialog(true)}
                     >
                       <FontAwesomeIcon
-                        className="text-black text-xs"
+                        className="text-black text-xs "
                         icon={faPlus}
                       />
                     </Button>
@@ -224,11 +226,7 @@ const CahierDetails = () => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger className="  " asChild>
-                    <Button
-                      variant="secondary"
-                      className="rounded-md text-sm "
-                      onClick={() => setOpen(true)}
-                    >
+                    <Button variant="thirdly" onClick={() => setOpen(true)}>
                       <FontAwesomeIcon
                         className="text-black text-xs"
                         icon={faTrash}
@@ -251,13 +249,9 @@ const CahierDetails = () => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger className="  " asChild>
-                    <Button
-                      variant="secondary"
-                      className="rounded-md text-sm "
-                      onClick={() => setOpen(true)}
-                    >
+                    <Button variant="thirdly" onClick={() => setOpen(true)}>
                       <FontAwesomeIcon
-                        className="text-blue text-xs"
+                        className="text-black text-xs "
                         icon={faMagnifyingGlass}
                       />
                     </Button>
@@ -297,19 +291,23 @@ const CahierDetails = () => {
                       </h1>
                     </div>
                   </div>
-                  <div className="ml-8 space-y-2 p-1 ">
+                  <div className="ml-8 space-y-2 p-1 flex flex-col ">
                     {fonctionnalité.casTests.length > 0 ? (
                       fonctionnalité.casTests.map((testCase) => (
                         <Button
                           onClick={() => handleTestCaseClick(testCase)}
                           key={testCase.id}
                           className=" w-full justify-start"
+                          variant="thirdly"
                         >
                           {testCase.titre}
                         </Button>
                       ))
                     ) : (
-                      <Button className="text-start w-full  justify-start">
+                      <Button
+                        variant="thirdly"
+                        className="text-start w-full  justify-start "
+                      >
                         Pas de cas de test
                       </Button>
                     )}
@@ -365,14 +363,14 @@ const CahierDetails = () => {
                 <div>
                   <h1
                     onClick={handleTestCaseTitleClick}
-                    className="text-[30px]"
+                    className="text-[30px] "
                   >
                     {selectedTestCase.titre}
                   </h1>
                 </div>
-                <div>
+                {/* <div>
                   <Button>Status</Button>
-                </div>
+                </div> */}
               </div>
 
               <div className="border-y-2 mt-4 flex flex-row p-2   ">
@@ -405,7 +403,7 @@ const CahierDetails = () => {
                         onClick={() => handleButtonClick("button2")}
                       >
                         <FontAwesomeIcon
-                          className="text-black text-xs"
+                          className="text-black text-xs "
                           icon={faList}
                         />
                       </Button>
@@ -447,12 +445,12 @@ const CahierDetails = () => {
                         key={index}
                         className="h-full flex  mb-4 bg-white rounded-md w-full pb-4 "
                       >
-                        <p className="basis-32  flex justify-center items-center text-xl font-bold text-gray-600 ">
+                        {/* <p className="basis-32  flex justify-center items-center text-xl font-bold text-gray-600 ">
                           {index + 1}
-                        </p>
+                        </p> */}
 
-                        <div className="w-1/2">
-                          <h1 className="text-base font-bold  ">Action</h1>
+                        <div className="w-1/2 ml-4">
+                          <h1 className="text-base font-bold ">Action</h1>
 
                           <p
                             className=""
@@ -472,34 +470,46 @@ const CahierDetails = () => {
                         </div> */}
                       </div>
                     ))}
-                    <div className="h-full flex mb-4 bg-white flex-col pb-4 ">
-                      <div className=" w-full flex">
-                        <div className="w-full">
-                          <h1 className="text-[20px] font-bold p-4">Action</h1>
-                          <div className="mt-2 p-4">
-                            <Textarea
-                              className="whitespace-pre-wrap"
-                              placeholder="Action"
-                              value={actionText}
-                              onChange={(e) => setActionText(e.target.value)}
-                              onKeyDown={handleKeyDown}
-                            />
+                    {showAddStep && (
+                      <div className="h-full flex mb-4 bg-white flex-col pb-4 ">
+                        <div className=" w-full flex">
+                          <div className="w-full">
+                            <h1 className="text-[20px] font-bold p-4">
+                              Description
+                            </h1>
+                            <div className="mt-2 p-4  mr-4">
+                              <Textarea
+                                className="whitespace-pre-wrap"
+                                placeholder="Etapes"
+                                value={actionText}
+                                onChange={(e) => setActionText(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                              />
+                            </div>
                           </div>
                         </div>
+                        <div className="mt-4">
+                          <Button
+                            variant="thirdly"
+                            className="ml-4"
+                            onClick={handleConfirm}
+                          >
+                            Confirmer
+                          </Button>
+                        </div>
                       </div>
-                      <div className="mt-4">
-                        <Button className="ml-4" onClick={handleConfirm}>
-                          Confirmer
-                        </Button>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <div className="w-full bg-white h-[100vh]">
-              Selectionner un cas de test
+            <div className="w-full bg-white h-full flex items-center justify-center text-2xl text-[#f2762a] font-bold">
+              {fonctionnalités.length === 0
+                ? "Créez d'abord une fonctionnalité"
+                : fonctionnalités.every((f) => f.casTests.length === 0)
+                ? "Créez  des cas de test"
+                : "Sélectionnez un cas de test"}
             </div>
           )}
         </div>

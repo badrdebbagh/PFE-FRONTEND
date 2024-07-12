@@ -109,7 +109,7 @@ const ProjectsTesteur = ({ onSelectDomaine }) => {
                       </span>
                       <span className="text-xl font-bold text-slate-900">
                         {" "}
-                        {project.chefDeProjet ? project.chefDeProjet : "anas"}
+                        {project.chefDeProjet ? project.chefDeProjet : "CHEF"}
                       </span>
                     </p>
                   </div>

@@ -55,7 +55,7 @@ const Sidebar = () => {
         {userRole === "ADMIN" && (
           <>
             <SidebarItem
-              title="Dashboard"
+              title="Tableau de bord"
               to="/"
               icon={HomeIcon}
               selected={selected}
@@ -69,7 +69,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <SidebarItem
-              title="Projects"
+              title="Projets"
               to="/projects"
               icon={DocumentIcon}
               selected={selected}
@@ -99,7 +99,15 @@ const Sidebar = () => {
           <>
             <SidebarItem
               title="Projects"
-              to="/projects"
+              to="/projects2"
+              icon={DocumentIcon}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <SidebarItem
+              title="Saisis "
+              to="/saisieProjets"
               icon={DocumentIcon}
               selected={selected}
               setSelected={setSelected}
@@ -107,13 +115,6 @@ const Sidebar = () => {
             <SidebarItem
               title="Tests"
               to="/tests"
-              icon={DocumentIcon}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <SidebarItem
-              title="Projects saisie"
-              to="/projects2"
               icon={DocumentIcon}
               selected={selected}
               setSelected={setSelected}

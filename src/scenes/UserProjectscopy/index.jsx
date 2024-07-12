@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "../../componentsShadn/ui/select";
 import { getProjectDomaines } from "../../state/authentication/Action";
+import { useToast } from "../../componentsShadn/ui/use-toast";
 
 const UserProjectsCopy = () => {
   const projects = useSelector((state) => state.auth.projects);
@@ -26,7 +27,7 @@ const UserProjectsCopy = () => {
   const dispatch = useDispatch();
 
   const { userId } = useParams();
-
+  const { toast } = useToast();
   const [selectedDomaines, setSelectedDomaines] = useState({});
 
   const handleRoleChange = (projectId, domaines) => {
@@ -37,17 +38,6 @@ const UserProjectsCopy = () => {
     }));
   };
 
-  const handleAssignDomaine = () => {
-    Object.keys(selectedDomaines).forEach((projectId) => {
-      const role = selectedDomaines[projectId];
-      console.log(`Assigning role: ${role} to project ID: ${projectId}`);
-      if (role) {
-        dispatch(assignProjectToUser(userId, projectId, role));
-      } else {
-        console.log("No role selected for project:", projectId);
-      }
-    });
-  };
   const handleAssignProject = () => {
     Object.keys(selectedDomaines).forEach((projectId) => {
       const domaineId = selectedDomaines[projectId];
@@ -56,12 +46,14 @@ const UserProjectsCopy = () => {
       );
       if (domaineId) {
         dispatch(assignDomaineToProjectForUser(userId, domaineId, projectId));
+        toast({
+          description: "Projet assigné avec succès ",
+        });
       } else {
         console.log("No role selected for project:", projectId);
       }
     });
   };
-
   useEffect(() => {
     const loadJWT = async () => {
       const token = await localStorage.getItem("jwt");
@@ -74,16 +66,12 @@ const UserProjectsCopy = () => {
   }, [dispatch]);
   const columns = [
     {
-      accessorKey: "projectId",
-      header: "id",
-    },
-    {
       accessorKey: "projectName",
-      header: "nom",
+      header: "Nom du projet",
     },
     {
       accessorKey: "description",
-      header: "Description",
+      header: "Description du projet",
     },
     {
       id: "domaines",
@@ -91,17 +79,22 @@ const UserProjectsCopy = () => {
       header: "Domaines",
       cell: ({ row }) => {
         const projectId = row.original.projectId;
+        const domaines = row.original.domaines;
 
-        return (
+        return domaines.length === 0 ? (
+          <span className="text-red-500 font-bold">
+            Aucun domaine lié jusqu'a présent
+          </span>
+        ) : (
           <Select
             value={selectedDomaines[projectId] || ""}
             onValueChange={(value) => handleRoleChange(projectId, value)}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className=" bg-white border text-[#f2762a] font-bold border-[#f2762a] w-full">
               <SelectValue placeholder="Domaines" />
             </SelectTrigger>
             <SelectContent>
-              {row.original.domaines.map((domaine) => (
+              {domaines.map((domaine) => (
                 <SelectItem key={domaine.id} value={domaine.id}>
                   {domaine.nom}
                 </SelectItem>
@@ -117,9 +110,9 @@ const UserProjectsCopy = () => {
       <div className="">
         <DataTable columns={columns} data={projects} />
       </div>
-      <div>
-        <Button variant="secondary" onClick={handleAssignProject}>
-          Assign
+      <div className="flex justify-center items-center">
+        <Button variant="thirdly" onClick={handleAssignProject}>
+          Affecter le projet
         </Button>
       </div>
     </div>

@@ -34,6 +34,12 @@ import {
   DELETE_USER_FAILURE,
   DELETE_USER_REQUEST,
   EXECUTE_TEST_CASE_SUCCESS,
+  FETCH_TEST_ITERATIONS_FAILURE,
+  FETCH_TEST_ITERATIONS_REQUEST,
+  FETCH_TEST_ITERATIONS_SUCCESS,
+  FETCH_TEST_PLANS_FAILURE,
+  FETCH_TEST_PLANS_REQUEST,
+  FETCH_TEST_PLANS_SUCCESS,
   FETCH_USER_PROJECTS_FAILURE,
   FETCH_USER_PROJECTS_REQUEST,
   FETCH_USER_PROJECTS_SUCCESS,
@@ -677,6 +683,27 @@ export const addDomaine = (domaineData) => async (dispatch) => {
     dispatch({ type: CREATE_DOMAINE_FAILURE, payload: error });
   }
 };
+
+export const fetchTestPlans = (projectId) => async (dispatch) => {
+  dispatch({ type: FETCH_TEST_PLANS_REQUEST });
+  try {
+    const { data } = await api.get(`/api/test-plans/project/${projectId}`);
+    dispatch({ type: FETCH_TEST_PLANS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({ type: FETCH_TEST_PLANS_FAILURE, payload: error.message });
+  }
+};
+
+export const fetchTestIterations = (testPlanId) => async (dispatch) => {
+  dispatch({ type: FETCH_TEST_ITERATIONS_REQUEST });
+  try {
+    const { data } = await api.get(`/api/test-plans/${testPlanId}/iterations`);
+    dispatch({ type: FETCH_TEST_ITERATIONS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({ type: FETCH_TEST_ITERATIONS_FAILURE, payload: error.message });
+  }
+};
+
 export const logout = (navigate) => async (dispatch) => {
   dispatch({ type: LOGOUT });
   try {

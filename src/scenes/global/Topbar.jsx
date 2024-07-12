@@ -111,7 +111,7 @@ const Topbar = () => {
     // </Box>
     <div className=" py-2 flex justify-center pr-8 shadow-[0_3px_10px_rgb(0,0,0,0.2)] items-center">
       <h1 className="text-gray-600 font-bold text-2xl">
-        Bonjour , {decoded.firstName} {decoded.lastName}
+        Bonjour , {decoded.firstName}
       </h1>
     </div>
   );

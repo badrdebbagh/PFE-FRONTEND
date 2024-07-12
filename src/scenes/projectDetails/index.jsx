@@ -138,14 +138,16 @@ const ProjectDetails = ({ onSelectSousDomaine }) => {
       {/* Sous Cahier De Tests Card */}
 
       <div className="space-y-5 ">
-        <div className="ml-2">
-          <h1 className="text-lg mb-4 font-bold">Sous Cahier De Tests</h1>
+        <div className="ml-6 mt-6">
+          <h1 className="text-lg mb-4 font-bold text-black underline">
+            Sous Cahier De Tests
+          </h1>
         </div>
         {sous_cahiers.length > 0 ? (
           sous_cahiers.map((sous_cahier) => (
             <Card
               key={sous_cahier.id}
-              className="ml-2 p-5 w-1/2 flex flex-row justify-between"
+              className="ml-2 p-5 w-1/2 flex flex-row justify-between border border-[#f2762a]"
             >
               <div>
                 <h2
@@ -155,7 +157,7 @@ const ProjectDetails = ({ onSelectSousDomaine }) => {
                   {sous_cahier.name}
                 </h2>
                 {/* <p>Domain: {sous_cahier.domaineId}</p> */}
-                <p>Sous domaine: {sous_cahier.sousDomaineId || "None"}</p>
+                {/* <p>Sous domaine: {sous_cahier.sousDomaineId || "None"}</p> */}
               </div>
               <div>
                 {/* <Select
@@ -179,20 +181,23 @@ const ProjectDetails = ({ onSelectSousDomaine }) => {
             </Card>
           ))
         ) : (
-          <div className="ml-2 font-bold">
-            <p>No Cahiers de tests available for this domain yet.</p>
+          <div className="ml-6 font-bold">
+            <p className="text-black text-2xl">
+              Pas de cahiers de tests disponibles pour ce domaine. Veuillez en
+              créer pour pouvoir continuer.
+            </p>
           </div>
         )}
       </div>
 
-      <div className="flex items-center   justify-end gap-4 mr-8 ">
+      <div className="flex items-center mt-12   justify-end gap-4 mr-8 ">
         <div className="">
           <Dialog variant="secondary">
             <DialogTrigger>
-              <Button variant="secondary">Nouveau cahier de test </Button>
+              <Button variant="thirdly">Nouveau cahier de test </Button>
             </DialogTrigger>
             <DialogContent>
-              <DialogHeader>Creer nouveaux sous cahier de test</DialogHeader>
+              <DialogHeader>Creer un cahier de test</DialogHeader>
               <CreateSousCahierDeTestForm />
             </DialogContent>
           </Dialog>
@@ -201,7 +206,7 @@ const ProjectDetails = ({ onSelectSousDomaine }) => {
         <div>
           <Dialog variant="secondary">
             <DialogTrigger className=" rounded-md">
-              <Button variant="secondary" className=" rounded-md">
+              <Button variant="thirdly" className=" rounded-md">
                 Charger un cahier de test
               </Button>
             </DialogTrigger>
